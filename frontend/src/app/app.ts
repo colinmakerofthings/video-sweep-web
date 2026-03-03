@@ -17,7 +17,7 @@ export class App implements OnInit {
   state: AppState = 'idle';
   rows: ScanRow[] = [];
   nonVideos: string[] = [];
-  cleanUp = false;
+  cleanUp = true;
   result: ProceedResult | null = null;
   errorMessage = '';
   config: DirectoryConfig | null = null;

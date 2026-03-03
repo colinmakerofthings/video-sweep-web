@@ -9,6 +9,15 @@
 
     <!-- Left sidebar -->
     <aside class="sidebar">
+      <button
+        class="btn btn-primary btn-block"
+        (click)="scan()"
+        [disabled]="state === 'scanning' || state === 'proceeding'">
+        <span *ngIf="state === 'scanning'" class="spinner"></span>
+        <span *ngIf="state !== 'scanning'">&#x1F50D;</span>
+        Scan
+      </button>
+
       <div class="sidebar-section">
         <div class="sidebar-title">Directories</div>
         <ng-container *ngIf="config; else loadingDirs">
@@ -29,26 +38,20 @@
           <span class="dir-loading">Loading&hellip;</span>
         </ng-template>
       </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Options</div>
+        <label class="sidebar-toggle">
+          <input type="checkbox" [(ngModel)]="cleanUp" />
+          Delete non-video files
+        </label>
+      </div>
     </aside>
 
     <main class="app-main">
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <button
-        class="btn btn-primary"
-        (click)="scan()"
-        [disabled]="state === 'scanning' || state === 'proceeding'">
-        <span *ngIf="state === 'scanning'" class="spinner"></span>
-        <span *ngIf="state !== 'scanning'">&#x1F50D;</span>
-        Scan
-      </button>
-
-      <label class="cleanup-toggle" *ngIf="state === 'ready' || state === 'done'">
-        <input type="checkbox" [(ngModel)]="cleanUp" [disabled]="state !== 'ready'" />
-        Delete non-video files
-      </label>
-
+    <!-- Toolbar: Proceed / Reset only -->
+    <div class="toolbar" *ngIf="state === 'ready' || state === 'done' || state === 'error'">
       <button
         class="btn btn-success"
         *ngIf="state === 'ready'"
@@ -68,7 +71,7 @@
     <!-- Summary chips -->
     <div class="summary" *ngIf="state === 'ready' || state === 'proceeding'">
       <span class="chip chip-movie">{{ movieCount }} movie{{ movieCount !== 1 ? 's' : '' }}</span>
-      <span class="chip chip-series">{{ seriesCount }} series episode{{ seriesCount !== 1 ? 's' : '' }}</span>
+      <span class="chip chip-series">{{ seriesCount }} episode{{ seriesCount !== 1 ? 's' : '' }}</span>
       <span class="chip chip-nonvideo" *ngIf="nonVideos.length > 0">
         {{ nonVideos.length }} non-video file{{ nonVideos.length !== 1 ? 's' : '' }}
       </span>
@@ -134,11 +137,7 @@
 
     <!-- Empty state -->
     <div class="empty-state" *ngIf="state === 'idle'">
-      <p>Press <strong>Scan</strong> to discover video files in the mounted source directory.</p>
-    </div>
-
-    <div class="empty-state" *ngIf="state === 'ready' && rows.length === 0">
-      <p>No video files found in <code>{{ config?.sourceDir ?? '/media/source' }}</code>.</p>
+      <p>Press <strong>Scan</strong> to discover video files in the source directory.</p>
     </div>
 
     </main>
