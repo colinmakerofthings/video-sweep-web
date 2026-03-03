@@ -1,6 +1,6 @@
 # video-sweep-web
 
-A web-based variant of [video-sweep](https://github.com/yourname/video-sweep) — scan, classify, and rename video files from a browser UI. Runs as a Docker Compose app on your Raspberry Pi 5 (or any Docker host).
+A web-based variant of [video-sweep](https://github.com/colinmakerofthings/video-sweep) — scan, classify, and rename video files from a browser UI. Runs as a Docker Compose app on your Raspberry Pi 5 (or any Docker host).
 
 ## How it works
 
@@ -57,7 +57,7 @@ Output: `Breaking Bad S01E01.mkv` → `$SERIES_DIR/Breaking Bad/Season 1/Breakin
 When `OMDB_API_KEY` is set, movie rows show two extra columns in the scan table:
 
 | Column | Meaning |
-|---|---|
+| --- | --- |
 | **Valid** | `Yes` — OMDb confirmed the title; `No` — OMDb found a different canonical title; `-` — no result |
 | **Suggested Name** | The canonical OMDb title, e.g. `The Dark Knight [2008]` |
 
@@ -66,7 +66,7 @@ Get a free API key at <https://www.omdbapi.com/apikey.aspx>.
 ## Environment variables
 
 | Variable | Required | Description |
-|---|---|---|
+| --- | --- | --- |
 | `SOURCE_DIR` | Yes | Host path mounted as `/media/source` inside the container |
 | `MOVIES_DIR` | Yes | Host path mounted as `/media/movies` |
 | `SERIES_DIR` | Yes | Host path mounted as `/media/series` |
@@ -74,7 +74,7 @@ Get a free API key at <https://www.omdbapi.com/apikey.aspx>.
 
 ## Architecture
 
-```
+```text
 ┌─────────────────────────────────────┐
 │  Browser  :8080                     │
 │  Angular UI (nginx)                 │

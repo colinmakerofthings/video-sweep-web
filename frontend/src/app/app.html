@@ -5,7 +5,33 @@
     </div>
   </header>
 
-  <main class="app-main">
+  <div class="app-body">
+
+    <!-- Left sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Directories</div>
+        <ng-container *ngIf="config; else loadingDirs">
+          <div class="dir-entry">
+            <span class="dir-label">Source</span>
+            <span class="dir-path">{{ config.sourceDir }}</span>
+          </div>
+          <div class="dir-entry">
+            <span class="dir-label">Movies</span>
+            <span class="dir-path">{{ config.moviesDir }}</span>
+          </div>
+          <div class="dir-entry">
+            <span class="dir-label">Series</span>
+            <span class="dir-path">{{ config.seriesDir }}</span>
+          </div>
+        </ng-container>
+        <ng-template #loadingDirs>
+          <span class="dir-loading">Loading&hellip;</span>
+        </ng-template>
+      </div>
+    </aside>
+
+    <main class="app-main">
 
     <!-- Toolbar -->
     <div class="toolbar">
@@ -112,9 +138,11 @@
     </div>
 
     <div class="empty-state" *ngIf="state === 'ready' && rows.length === 0">
-      <p>No video files found in <code>/media/source</code>.</p>
+      <p>No video files found in <code>{{ config?.sourceDir ?? '/media/source' }}</code>.</p>
     </div>
 
-  </main>
+    </main>
+
+  </div>
 </div>
 

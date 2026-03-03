@@ -46,7 +46,7 @@ router.post('/', (req: Request, res: Response) => {
       result.moved++;
 
       // Clean up the source directory chain
-      removeEmptyDirs(path.dirname(row.file), '/media/source');
+      removeEmptyDirs(path.dirname(row.file), process.env.SOURCE_DIR ?? '/media/source');
     } catch (err: unknown) {
       result.errors.push(
         `Move failed: ${row.file} → ${row.targetPath}: ${err instanceof Error ? err.message : String(err)}`

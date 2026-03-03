@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ProceedResult, ScanResponse, ScanRow } from './sweep.types';
+import { DirectoryConfig, ProceedResult, ScanResponse, ScanRow } from './sweep.types';
 
 @Injectable({ providedIn: 'root' })
 export class SweepService {
@@ -15,5 +15,9 @@ export class SweepService {
 
   proceed(rows: ScanRow[], nonVideos: string[], cleanUp: boolean): Observable<ProceedResult> {
     return this.http.post<ProceedResult>(`${this.base}/proceed`, { rows, nonVideos, cleanUp });
+  }
+
+  getConfig(): Observable<DirectoryConfig> {
+    return this.http.get<DirectoryConfig>(`${this.base}/config`);
   }
 }

@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SweepService } from './sweep.service';
-import { ScanRow, ScanResponse, ProceedResult } from './sweep.types';
+import { ScanRow, ScanResponse, ProceedResult, DirectoryConfig } from './sweep.types';
 
 type AppState = 'idle' | 'scanning' | 'ready' | 'proceeding' | 'done' | 'error';
 
@@ -13,15 +13,30 @@ type AppState = 'idle' | 'scanning' | 'ready' | 'proceeding' | 'done' | 'error';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {
+export class App implements OnInit {
   state: AppState = 'idle';
   rows: ScanRow[] = [];
   nonVideos: string[] = [];
   cleanUp = false;
   result: ProceedResult | null = null;
   errorMessage = '';
+  config: DirectoryConfig | null = null;
 
-  constructor(private sweepService: SweepService) {}
+  constructor(private sweepService: SweepService, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+    this.loadConfig();
+  }
+
+  private loadConfig(): void {
+    this.sweepService.getConfig().subscribe({
+      next: (cfg) => {
+        this.config = cfg;
+        this.cdr.detectChanges();
+      },
+      error: () => setTimeout(() => this.loadConfig(), 2000),
+    });
+  }
 
   scan(): void {
     this.state = 'scanning';

@@ -17,3 +17,9 @@ export interface ProceedResult {
   deleted: number;
   errors: string[];
 }
+
+export interface DirectoryConfig {
+  sourceDir: string;
+  moviesDir: string;
+  seriesDir: string;
+}

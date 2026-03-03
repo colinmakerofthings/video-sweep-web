@@ -7,11 +7,12 @@ import { ScanResponse, ScanRow } from '../lib/types';
 
 const router = Router();
 
-const SOURCE_DIR = '/media/source';
-const MOVIES_DIR = '/media/movies';
-const SERIES_DIR = '/media/series';
-
 router.post('/', async (_req: Request, res: Response) => {
+  // Read env vars at request time so they always reflect the current environment
+  const SOURCE_DIR = process.env.SOURCE_DIR ?? '/media/source';
+  const MOVIES_DIR = process.env.MOVIES_DIR ?? '/media/movies';
+  const SERIES_DIR = process.env.SERIES_DIR ?? '/media/series';
+
   try {
     const { videos, nonVideos } = findFiles(SOURCE_DIR);
     const apiKey = process.env.OMDB_API_KEY ?? '';

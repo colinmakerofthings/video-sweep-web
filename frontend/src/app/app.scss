@@ -49,10 +49,70 @@ body {
   }
 }
 
+// Layout
+.app-body {
+  display: flex;
+  align-items: flex-start;
+  min-height: calc(100vh - 52px);
+}
+
+// Sidebar
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: $surface;
+  border-right: 1px solid $border;
+  min-height: calc(100vh - 52px);
+  padding: 20px 16px;
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: $muted;
+  margin-bottom: 4px;
+}
+
+.dir-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dir-label {
+  color: $muted;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 10px;
+}
+
+.dir-path {
+  color: $accent;
+  font-family: 'Consolas', 'Cascadia Code', monospace;
+  font-size: 11px;
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.dir-loading {
+  color: $muted;
+  font-size: 12px;
+  font-style: italic;
+}
+
 // Main
 .app-main {
-  max-width: 1400px;
-  margin: 0 auto;
+  flex: 1;
+  min-width: 0;
   padding: 24px;
 }
 
