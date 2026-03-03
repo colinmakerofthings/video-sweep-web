@@ -1,6 +1,6 @@
 # video-sweep-web
 
-A web-based variant of [video-sweep](https://github.com/colinmakerofthings/video-sweep) — scan, classify, and rename video files from a browser UI. Runs as a Docker Compose app on your Raspberry Pi 5 (or any Docker host).
+A web-based variant of my [video-sweep](https://github.com/colinmakerofthings/video-sweep) tool — scan, classify, and rename video files from a browser UI. Runs as a Docker Compose app on your Raspberry Pi 5 (or any Docker host).
 
 ## How it works
 
