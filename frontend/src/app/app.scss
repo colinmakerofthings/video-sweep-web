@@ -1,18 +1,18 @@
 @use 'sass:color';
 
 // Variables
-$bg: #0f1117;
-$surface: #1a1d27;
-$surface2: #22263a;
-$border: #2e3250;
-$text: #e4e6f1;
-$muted: #8b8fa8;
-$accent: #6c80ff;
-$movie-color: #56c2e6;
-$series-color: #b97ff7;
-$success: #4caf84;
-$error: #e05c6a;
-$warn: #f0a545;
+$bg:            #f5f6f8;
+$surface:       #ffffff;
+$surface2:      #f0f1f4;
+$border:        #dde0e8;
+$text:          #1a1d2e;
+$muted:         #6b7080;
+$accent:        #2563eb;
+$movie-color:   #0891b2;
+$series-color:  #7c3aed;
+$success:       #16a34a;
+$error:         #dc2626;
+$warn:          #d97706;
 
 * {
   box-sizing: border-box;
@@ -35,6 +35,7 @@ body {
   height: 52px;
   display: flex;
   align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 
   .header-inner {
     display: flex;
@@ -43,9 +44,9 @@ body {
 
   .logo {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     color: $accent;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
   }
 }
 
@@ -58,18 +59,18 @@ body {
 
 // Sidebar
 .sidebar {
-  width: 220px;
+  width: 230px;
   flex-shrink: 0;
   background: $surface;
   border-right: 1px solid $border;
   min-height: calc(100vh - 52px);
-  padding: 20px 16px;
+  padding: 24px 18px;
 }
 
 .sidebar-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .sidebar-title {
@@ -78,13 +79,17 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: $muted;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .dir-entry {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  padding: 8px 10px;
+  background: $surface2;
+  border-radius: 6px;
+  border: 1px solid $border;
 }
 
 .dir-label {
@@ -130,12 +135,12 @@ body {
   align-items: center;
   gap: 6px;
   padding: 8px 18px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.15s, transform 0.1s;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
 
   &:disabled {
     opacity: 0.4;
@@ -143,7 +148,7 @@ body {
   }
 
   &:not(:disabled):hover {
-    opacity: 0.85;
+    filter: brightness(0.95);
   }
 
   &:not(:disabled):active {
@@ -153,17 +158,20 @@ body {
   &.btn-primary {
     background: $accent;
     color: #fff;
+    box-shadow: 0 1px 3px rgba($accent, 0.3);
   }
 
   &.btn-success {
     background: $success;
     color: #fff;
+    box-shadow: 0 1px 3px rgba($success, 0.3);
   }
 
   &.btn-secondary {
-    background: $surface2;
+    background: $surface;
     color: $text;
-    border: 1px solid $border;
+    border-color: $border;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   }
 }
 
@@ -171,7 +179,7 @@ body {
 .spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255,255,255,0.4);
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -179,9 +187,7 @@ body {
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 // Cleanup toggle
@@ -213,20 +219,24 @@ body {
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
+  border: 1px solid transparent;
 
   &.chip-movie {
-    background: rgba($movie-color, 0.15);
-    color: $movie-color;
+    background: color.adjust($movie-color, $lightness: 44%);
+    color: color.adjust($movie-color, $lightness: -10%);
+    border-color: color.adjust($movie-color, $lightness: 30%);
   }
 
   &.chip-series {
-    background: rgba($series-color, 0.15);
-    color: $series-color;
+    background: color.adjust($series-color, $lightness: 44%);
+    color: color.adjust($series-color, $lightness: -5%);
+    border-color: color.adjust($series-color, $lightness: 30%);
   }
 
   &.chip-nonvideo {
-    background: rgba($warn, 0.15);
-    color: $warn;
+    background: color.adjust($warn, $lightness: 44%);
+    color: color.adjust($warn, $lightness: -15%);
+    border-color: color.adjust($warn, $lightness: 30%);
   }
 }
 
@@ -238,15 +248,15 @@ body {
   line-height: 1.6;
 
   &.alert-error {
-    background: rgba($error, 0.12);
-    border: 1px solid rgba($error, 0.3);
-    color: color.adjust($error, $lightness: 15%);
+    background: color.adjust($error, $lightness: 44%);
+    border: 1px solid color.adjust($error, $lightness: 28%);
+    color: color.adjust($error, $lightness: -8%);
   }
 
   &.alert-success {
-    background: rgba($success, 0.12);
-    border: 1px solid rgba($success, 0.3);
-    color: color.adjust($success, $lightness: 15%);
+    background: color.adjust($success, $lightness: 50%);
+    border: 1px solid color.adjust($success, $lightness: 32%);
+    color: color.adjust($success, $lightness: -10%);
   }
 }
 
@@ -259,7 +269,7 @@ body {
   margin-top: 8px;
   padding-left: 20px;
   font-size: 12px;
-  color: color.adjust($error, $lightness: 10%);
+  color: color.adjust($error, $lightness: -5%);
 }
 
 // Table
@@ -267,6 +277,7 @@ body {
   overflow-x: auto;
   border-radius: 8px;
   border: 1px solid $border;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .sweep-table {
@@ -274,7 +285,7 @@ body {
   border-collapse: collapse;
 
   th {
-    background: $surface;
+    background: $surface2;
     color: $muted;
     text-transform: uppercase;
     font-size: 11px;
@@ -287,8 +298,9 @@ body {
 
   td {
     padding: 9px 14px;
-    border-bottom: 1px solid color.adjust($border, $lightness: -3%);
+    border-bottom: 1px solid $border;
     vertical-align: middle;
+    background: $surface;
   }
 
   tr:last-child td {
@@ -296,18 +308,18 @@ body {
   }
 
   tr:hover td {
-    background: rgba($accent, 0.04);
+    background: color.adjust($surface2, $lightness: -1%);
   }
 
   &.row-movie {
     td:first-child {
-      border-left: 2px solid $movie-color;
+      border-left: 3px solid $movie-color;
     }
   }
 
   &.row-series {
     td:first-child {
-      border-left: 2px solid $series-color;
+      border-left: 3px solid $series-color;
     }
   }
 }
@@ -333,30 +345,22 @@ body {
   text-transform: uppercase;
 
   &.badge-movie {
-    background: rgba($movie-color, 0.15);
-    color: $movie-color;
+    background: color.adjust($movie-color, $lightness: 44%);
+    color: color.adjust($movie-color, $lightness: -10%);
   }
 
   &.badge-series {
-    background: rgba($series-color, 0.15);
-    color: $series-color;
+    background: color.adjust($series-color, $lightness: 44%);
+    color: color.adjust($series-color, $lightness: -5%);
   }
 }
 
 .valid-badge {
   font-weight: 600;
 
-  &.valid-yes {
-    color: $success;
-  }
-
-  &.valid-no {
-    color: $error;
-  }
-
-  &.valid-dash {
-    color: $muted;
-  }
+  &.valid-yes { color: $success; }
+  &.valid-no  { color: $error; }
+  &.valid-dash { color: $muted; }
 }
 
 // Empty state
@@ -367,8 +371,10 @@ body {
 
   code {
     background: $surface2;
+    border: 1px solid $border;
     padding: 2px 6px;
     border-radius: 4px;
     font-family: 'Consolas', monospace;
+    color: $text;
   }
 }
