@@ -54,14 +54,46 @@ Output: `Breaking Bad S01E01.mkv` → `$SERIES_DIR/Breaking Bad/Season 1/Breakin
 
 ## Optional: OMDb validation
 
+### Getting a free API key
+
+1. Go to <https://www.omdbapi.com/apikey.aspx>
+2. Select the **FREE** tier and enter your email address
+3. Submit the form — OMDb will send an activation link to your inbox
+4. Click the activation link; your key is then shown on the confirmation page
+5. Copy the key into your `.env` file:
+   ```env
+   OMDB_API_KEY=your_key_here
+   ```
+
+### What happens with the key set
+
 When `OMDB_API_KEY` is set, movie rows show two extra columns in the scan table:
 
 | Column | Meaning |
 | --- | --- |
-| **Valid** | `Yes` — OMDb confirmed the title; `No` — OMDb found a different canonical title; `-` — no result |
+| **Valid** | `Yes` — OMDb confirmed the title exactly; `No` — OMDb found a different canonical title; `-` — no match returned |
 | **Suggested Name** | The canonical OMDb title, e.g. `The Dark Knight [2008]` |
 
-Get a free API key at <https://www.omdbapi.com/apikey.aspx>.
+The backend first attempts a direct title lookup; if that returns no result it falls back to a fuzzy search using progressively shorter title substrings.
+
+### What happens without the key
+
+If `OMDB_API_KEY` is left blank (the default):
+
+- **No requests** are made to the OMDb API
+- The **Valid** and **Suggested Name** columns display `-` for every movie row
+- All other scan and rename functionality works exactly as normal — the key is only needed for title validation
+
+You can always add the key later and re-scan; no other configuration changes are required.
+
+### Usage limits
+
+| Tier | Daily request limit | Cost |
+| --- | --- | --- |
+| **Free** | 1,000 requests/day | Free (requires email activation) |
+| **Patreon** | 100,000 requests/day | Paid |
+
+Each movie in a scan consumes at most a few requests (one direct lookup, plus up to a handful of fuzzy-search attempts if the direct lookup fails). For typical home-media libraries the free tier is more than sufficient.
 
 ## Environment variables
 
@@ -70,7 +102,7 @@ Get a free API key at <https://www.omdbapi.com/apikey.aspx>.
 | `SOURCE_DIR` | Yes | Host path mounted as `/media/source` inside the container |
 | `MOVIES_DIR` | Yes | Host path mounted as `/media/movies` |
 | `SERIES_DIR` | Yes | Host path mounted as `/media/series` |
-| `OMDB_API_KEY` | No | OMDb API key; leave blank to disable validation |
+| `OMDB_API_KEY` | No | Free OMDb API key; leave blank to disable validation (Valid / Suggested Name columns show `-`). Free tier: 1,000 req/day. Get one at <https://www.omdbapi.com/apikey.aspx> |
 
 ## Architecture
 
