@@ -74,24 +74,29 @@ Get a free API key at <https://www.omdbapi.com/apikey.aspx>.
 
 ## Architecture
 
-```text
-┌─────────────────────────────────────┐
-│  Browser  :8080                     │
-│  Angular UI (nginx)                 │
-│  /api/* → proxy → backend:3001      │
-└────────────────┬────────────────────┘
-                 │
-┌────────────────▼────────────────────┐
-│  Node.js / Express + TypeScript     │
-│  POST /api/scan                     │
-│  POST /api/proceed                  │
-│  GET  /api/health                   │
-│                                     │
-│  Volumes:                           │
-│    /media/source  (read/write)      │
-│    /media/movies  (read/write)      │
-│    /media/series  (read/write)      │
-└─────────────────────────────────────┘
+```mermaid
+graph TB
+    Browser["🌐 Browser\n:8080"]
+
+    subgraph DC["Docker Compose"]
+        Frontend["nginx\nAngular SPA\n:80"]
+        Backend["Node.js / Express\n:3001\nPOST /api/scan\nPOST /api/proceed\nGET  /api/health"]
+    end
+
+    subgraph Volumes["Host Volumes"]
+        Source["/media/source\n(SOURCE_DIR)"]
+        Movies["/media/movies\n(MOVIES_DIR)"]
+        Series["/media/series\n(SERIES_DIR)"]
+    end
+
+    OMDb["OMDb API\nomdbapi.com\n(optional)"]
+
+    Browser   -->|"HTTP :8080"| Frontend
+    Frontend  -->|"/api/* proxy → :3001"| Backend
+    Backend   -->|"read"| Source
+    Backend   -->|"write movies"| Movies
+    Backend   -->|"write series"| Series
+    Backend   -.->|"validate titles"| OMDb
 ```
 
 ## Development (without Docker)
