@@ -1,0 +1,120 @@
+<div class="app-shell">
+  <header class="app-header">
+    <div class="header-inner">
+      <span class="logo">&#x1F9F9; video-sweep-web</span>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <button
+        class="btn btn-primary"
+        (click)="scan()"
+        [disabled]="state === 'scanning' || state === 'proceeding'">
+        <span *ngIf="state === 'scanning'" class="spinner"></span>
+        <span *ngIf="state !== 'scanning'">&#x1F50D;</span>
+        Scan
+      </button>
+
+      <label class="cleanup-toggle" *ngIf="state === 'ready' || state === 'done'">
+        <input type="checkbox" [(ngModel)]="cleanUp" [disabled]="state !== 'ready'" />
+        Delete non-video files
+      </label>
+
+      <button
+        class="btn btn-success"
+        *ngIf="state === 'ready'"
+        (click)="proceed()"
+        [disabled]="rows.length === 0">
+        <span>&#x2705;</span> Proceed
+      </button>
+
+      <button
+        class="btn btn-secondary"
+        *ngIf="state === 'done' || state === 'error'"
+        (click)="reset()">
+        &#x1F504; Reset
+      </button>
+    </div>
+
+    <!-- Summary chips -->
+    <div class="summary" *ngIf="state === 'ready' || state === 'proceeding'">
+      <span class="chip chip-movie">{{ movieCount }} movie{{ movieCount !== 1 ? 's' : '' }}</span>
+      <span class="chip chip-series">{{ seriesCount }} series episode{{ seriesCount !== 1 ? 's' : '' }}</span>
+      <span class="chip chip-nonvideo" *ngIf="nonVideos.length > 0">
+        {{ nonVideos.length }} non-video file{{ nonVideos.length !== 1 ? 's' : '' }}
+      </span>
+    </div>
+
+    <!-- Error banner -->
+    <div class="alert alert-error" *ngIf="state === 'error'">
+      <strong>Error:</strong> {{ errorMessage }}
+    </div>
+
+    <!-- Result banner -->
+    <div class="alert alert-success" *ngIf="state === 'done' && result">
+      <strong>Done!</strong>
+      Moved {{ result.moved }} file{{ result.moved !== 1 ? 's' : '' }}<span *ngIf="cleanUp">, deleted {{ result.deleted }} non-video file{{ result.deleted !== 1 ? 's' : '' }}</span>.
+      <span *ngIf="result.errors.length > 0" class="warn-inline">
+        {{ result.errors.length }} error{{ result.errors.length !== 1 ? 's' : '' }} occurred.
+      </span>
+      <ul *ngIf="result.errors.length > 0" class="error-list">
+        <li *ngFor="let e of result.errors">{{ e }}</li>
+      </ul>
+    </div>
+
+    <!-- Results table -->
+    <div class="table-wrapper" *ngIf="rows.length > 0">
+      <table class="sweep-table">
+        <thead>
+          <tr>
+            <th>Original File</th>
+            <th>Type</th>
+            <th>New Filename</th>
+            <th>Destination</th>
+            <ng-container *ngIf="hasOmdb">
+              <th>Valid</th>
+              <th>Suggested Name</th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows" [class.row-movie]="row.type === 'movie'" [class.row-series]="row.type === 'series'">
+            <td class="cell-file" [title]="row.file">{{ row.file | slice:row.file.lastIndexOf('/') + 1 }}</td>
+            <td>
+              <span class="badge" [class.badge-movie]="row.type === 'movie'" [class.badge-series]="row.type === 'series'">
+                {{ row.type }}
+              </span>
+            </td>
+            <td>{{ row.newFilename }}</td>
+            <td class="cell-dest" [title]="row.targetPath">{{ row.targetPath }}</td>
+            <ng-container *ngIf="hasOmdb">
+              <td>
+                <span class="valid-badge"
+                  [class.valid-yes]="row.valid === 'Yes'"
+                  [class.valid-no]="row.valid === 'No'"
+                  [class.valid-dash]="row.valid === '-'">
+                  {{ row.valid }}
+                </span>
+              </td>
+              <td>{{ row.suggested }}</td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="state === 'idle'">
+      <p>Press <strong>Scan</strong> to discover video files in the mounted source directory.</p>
+    </div>
+
+    <div class="empty-state" *ngIf="state === 'ready' && rows.length === 0">
+      <p>No video files found in <code>/media/source</code>.</p>
+    </div>
+
+  </main>
+</div>
+
