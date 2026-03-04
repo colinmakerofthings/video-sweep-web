@@ -144,15 +144,6 @@ body {
   padding: 24px;
 }
 
-// Toolbar
-.toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
 .btn {
   display: inline-flex;
   align-items: center;
@@ -343,10 +334,25 @@ body {
       color: $muted;
     }
   }
+
+  &.row-skip {
+    td {
+      color: $muted;
+      opacity: 0.5;
+    }
+    .cell-file {
+      text-decoration: line-through;
+    }
+  }
+
+  &.row-omdb-warn {
+    td:first-child {
+      border-left: 3px solid $warn;
+    }
+  }
 }
 
-.cell-file,
-.cell-dest {
+.cell-file {
   max-width: 260px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -354,6 +360,37 @@ body {
   color: $muted;
   font-family: 'Consolas', monospace;
   font-size: 12px;
+}
+
+.cell-dest-path {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  color: $muted;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+}
+
+.cell-dest {
+  max-width: 260px;
+}
+
+.col-action {
+  width: 60px;
+  text-align: center;
+
+  input[type='checkbox'] {
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.25;
+    }
+  }
 }
 
 // Badges
@@ -386,6 +423,14 @@ body {
   &.valid-yes { color: $success; }
   &.valid-no  { color: $error; }
   &.valid-dash { color: $muted; }
+}
+
+.omdb-suggestion {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+  color: $muted;
+  margin-top: 2px;
 }
 
 // Empty state

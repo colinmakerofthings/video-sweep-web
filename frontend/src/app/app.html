@@ -18,6 +18,21 @@
         Scan
       </button>
 
+      <button
+        class="btn btn-success btn-block"
+        *ngIf="state === 'ready'"
+        (click)="proceed()"
+        [disabled]="rows.length === 0">
+        <span>&#x2705;</span> Proceed
+      </button>
+
+      <button
+        class="btn btn-secondary btn-block"
+        *ngIf="state === 'done' || state === 'error'"
+        (click)="reset()">
+        &#x1F504; Reset
+      </button>
+
       <div class="sidebar-section">
         <div class="sidebar-title">Directories</div>
         <ng-container *ngIf="config; else loadingDirs">
@@ -42,7 +57,7 @@
       <div class="sidebar-section">
         <div class="sidebar-title">Options</div>
         <label class="sidebar-toggle">
-          <input type="checkbox" [(ngModel)]="cleanUp" />
+          <input type="checkbox" [ngModel]="cleanUp" (ngModelChange)="onCleanUpChange($event)" />
           Delete non-video files
         </label>
         <label class="sidebar-toggle">
@@ -53,24 +68,6 @@
     </aside>
 
     <main class="app-main">
-
-    <!-- Toolbar: Proceed / Reset only -->
-    <div class="toolbar" *ngIf="state === 'ready' || state === 'done' || state === 'error'">
-      <button
-        class="btn btn-success"
-        *ngIf="state === 'ready'"
-        (click)="proceed()"
-        [disabled]="rows.length === 0">
-        <span>&#x2705;</span> Proceed
-      </button>
-
-      <button
-        class="btn btn-secondary"
-        *ngIf="state === 'done' || state === 'error'"
-        (click)="reset()">
-        &#x1F504; Reset
-      </button>
-    </div>
 
     <!-- Summary chips -->
     <div class="summary" *ngIf="state === 'ready' || state === 'proceeding'">
@@ -89,7 +86,7 @@
     <!-- Result banner -->
     <div class="alert alert-success" *ngIf="state === 'done' && result">
       <strong>Done!</strong>
-      Moved {{ result.moved }} file{{ result.moved !== 1 ? 's' : '' }}<span *ngIf="cleanUp">, deleted {{ result.deleted }} non-video file{{ result.deleted !== 1 ? 's' : '' }}</span>.
+      Moved {{ result.moved }} file{{ result.moved !== 1 ? 's' : '' }}, deleted {{ result.deleted }} non-video file{{ result.deleted !== 1 ? 's' : '' }}.
       <span *ngIf="result.errors.length > 0" class="warn-inline">
         {{ result.errors.length }} error{{ result.errors.length !== 1 ? 's' : '' }} occurred.
       </span>
@@ -105,35 +102,41 @@
           <tr>
             <th>Original File</th>
             <th>Type</th>
-            <th>New Filename</th>
             <th>Destination</th>
-            <ng-container *ngIf="hasOmdb">
-              <th>Valid</th>
-              <th>Suggested Name</th>
-            </ng-container>
+            <th class="col-action">Move</th>
+            <th class="col-action">Delete</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of visibleRows" [class.row-movie]="row.type === 'movie'" [class.row-series]="row.type === 'series'" [class.row-delete]="row.type === 'delete'">
+          <tr *ngFor="let row of visibleRows"
+              [class.row-movie]="row.type === 'movie'"
+              [class.row-series]="row.type === 'series'"
+              [class.row-delete]="row.type === 'delete'"
+              [class.row-skip]="row.action === 'skip'"
+              [class.row-omdb-warn]="row.valid === 'No'">
             <td class="cell-file" [title]="row.file">{{ row.file | slice:row.file.lastIndexOf('/') + 1 }}</td>
             <td>
               <span class="badge" [class.badge-movie]="row.type === 'movie'" [class.badge-series]="row.type === 'series'" [class.badge-delete]="row.type === 'delete'">
                 {{ row.type === 'delete' ? 'non-video' : row.type === 'series' ? 'episode' : row.type }}
               </span>
             </td>
-            <td>{{ row.newFilename || '&mdash;' }}</td>
-            <td class="cell-dest" [title]="row.targetPath">{{ row.targetPath || '&mdash;' }}</td>
-            <ng-container *ngIf="hasOmdb">
-              <td>
-                <span class="valid-badge"
-                  [class.valid-yes]="row.valid === 'Yes'"
-                  [class.valid-no]="row.valid === 'No'"
-                  [class.valid-dash]="row.valid === '-'">
-                  {{ row.valid }}
-                </span>
-              </td>
-              <td>{{ row.suggested }}</td>
-            </ng-container>
+            <td class="cell-dest" [title]="row.targetPath">
+              <span class="cell-dest-path">{{ row.targetPath || '&mdash;' }}</span>
+              <span *ngIf="row.valid === 'No' && row.suggested" class="omdb-suggestion">
+                &#x26A0; OMDb suggests: {{ row.suggested }}
+              </span>
+            </td>
+            <td class="col-action">
+              <input type="checkbox"
+                [checked]="row.action === 'move'"
+                [disabled]="row.type === 'delete'"
+                (change)="setAction(row, 'move', $any($event.target).checked)" />
+            </td>
+            <td class="col-action">
+              <input type="checkbox"
+                [checked]="row.action === 'delete'"
+                (change)="setAction(row, 'delete', $any($event.target).checked)" />
+            </td>
           </tr>
         </tbody>
       </table>

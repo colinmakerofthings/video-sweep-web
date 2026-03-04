@@ -24,8 +24,6 @@ function removeEmptyDirs(dir: string, stopAt: string): void {
 
 interface ProceedRequest {
   rows: ScanRow[];
-  nonVideos?: string[];
-  cleanUp?: boolean;
 }
 
 interface ProceedResult {
@@ -35,14 +33,14 @@ interface ProceedResult {
 }
 
 router.post('/', (req: Request, res: Response) => {
-  const { rows, nonVideos = [], cleanUp = false }: ProceedRequest = req.body;
+  const { rows }: ProceedRequest = req.body;
 
   const result: ProceedResult = { moved: 0, deleted: 0, errors: [] };
 
   const sourceDir = process.env.SOURCE_DIR ?? '/media/source';
 
   for (const row of rows) {
-    if (row.type !== 'delete') {
+    if (row.action === 'move') {
       try {
         ensureDir(path.dirname(row.targetPath));
         fs.renameSync(row.file, row.targetPath);
@@ -53,7 +51,7 @@ router.post('/', (req: Request, res: Response) => {
           `Move failed: ${row.file} → ${row.targetPath}: ${err instanceof Error ? err.message : String(err)}`
         );
       }
-    } else if (cleanUp) {
+    } else if (row.action === 'delete') {
       try {
         fs.unlinkSync(row.file);
         result.deleted++;
