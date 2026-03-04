@@ -1,18 +1,27 @@
 @use 'sass:color';
 
+// Palette
+$sky-blue-light:    #8ecae6;
+$blue-green:        #219ebc;
+$deep-space-blue:   #005f73;
+$amber-flame:       #ffb703;
+$princeton-orange:  #ae2012;
+$sidebar-bg:        #1e2d3d;
+$nav-active:        #4285f4;
+
 // Variables
-$bg:            #f5f6f8;
+$bg:            #f1f5f9;
 $surface:       #ffffff;
-$surface2:      #f0f1f4;
-$border:        #dde0e8;
-$text:          #1a1d2e;
-$muted:         #6b7080;
-$accent:        #2563eb;
-$movie-color:   #0891b2;
-$series-color:  #7c3aed;
+$surface2:      #e8f0f5;
+$border:        #d0dde8;
+$text:          #1e2d3d;
+$muted:         #64748b;
+$accent:        $blue-green;
+$movie-color:   $blue-green;
+$series-color:  $deep-space-blue;
 $success:       #16a34a;
-$error:         #dc2626;
-$warn:          #d97706;
+$error:         $princeton-orange;
+$warn:          $amber-flame;
 
 * {
   box-sizing: border-box;
@@ -23,92 +32,117 @@ $warn:          #d97706;
 body {
   background: $bg;
   color: $text;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', 'Inter var', system-ui, sans-serif;
   font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-// Header
-.app-header {
-  background: $accent;
-  border-bottom: none;
-  padding: 0 24px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 6px rgba($accent, 0.35);
-
-  .header-inner {
-    display: flex;
-    align-items: center;
-  }
-
-  .logo {
-    font-size: 18px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 0.3px;
-  }
-}
+// Header (removed — branding now lives in sidebar)
 
 // Layout
 .app-body {
   display: flex;
   align-items: flex-start;
-  min-height: calc(100vh - 52px);
+  min-height: 100vh;
 }
 
 // Sidebar
 .sidebar {
-  width: 230px;
+  width: 250px;
   flex-shrink: 0;
-  background: $surface;
-  border-right: 1px solid $border;
-  min-height: calc(100vh - 52px);
-  padding: 24px 18px;
+  background: $sidebar-bg;
+  border-right: none;
+  min-height: 100vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 18px;
+  border-bottom: 1px solid rgba(white, 0.07);
+  margin-bottom: 8px;
+}
+
+.logo-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.sidebar-content {
+  padding: 12px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  .btn-primary {
+    background: $nav-active;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    letter-spacing: 0.01em;
+    box-shadow: 0 4px 14px rgba($nav-active, 0.45);
+    border: none;
+    padding: 10px 18px;
+  }
 }
 
 .sidebar-section {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
+  margin-top: 6px;
 }
 
 .sidebar-title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.4px;
-  color: $muted;
-  margin-bottom: 2px;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: rgba(white, 0.38);
+  margin-bottom: 4px;
 }
 
 .dir-entry {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  padding: 8px 10px;
-  background: $surface2;
-  border-radius: 6px;
-  border: 1px solid $border;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(white, 0.07);
+
+  &:last-of-type {
+    border-bottom: none;
+  }
 }
 
 .dir-label {
-  color: $muted;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  font-size: 10px;
+  color: rgba(white, 0.38);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 9px;
 }
 
 .dir-path {
-  color: $accent;
+  color: rgba(white, 0.82);
   font-family: 'Consolas', 'Cascadia Code', monospace;
   font-size: 11px;
   word-break: break-all;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .dir-loading {
-  color: $muted;
+  color: rgba(white, 0.38);
   font-size: 12px;
   font-style: italic;
 }
@@ -116,7 +150,7 @@ body {
 .sidebar-section + .sidebar-section {
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid $border;
+  border-top: 1px solid rgba(white, 0.08);
 }
 
 .sidebar-toggle {
@@ -124,13 +158,13 @@ body {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: $text;
+  color: rgba(white, 0.78);
   cursor: pointer;
   user-select: none;
 
   input[type='checkbox'] {
     cursor: pointer;
-    accent-color: $accent;
+    accent-color: $sky-blue-light;
     width: 15px;
     height: 15px;
     flex-shrink: 0;
@@ -141,7 +175,8 @@ body {
 .app-main {
   flex: 1;
   min-width: 0;
-  padding: 24px;
+  padding: 28px 32px;
+  background: $bg;
 }
 
 .btn {
@@ -151,8 +186,9 @@ body {
   padding: 8px 18px;
   border: 1px solid transparent;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
+  letter-spacing: 0.01em;
   cursor: pointer;
   transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
 
@@ -172,26 +208,26 @@ body {
   &.btn-primary {
     background: $accent;
     color: #fff;
-    box-shadow: 0 1px 3px rgba($accent, 0.3);
+    box-shadow: 0 2px 8px rgba($accent, 0.4);
   }
 
   &.btn-success {
     background: $success;
     color: #fff;
-    box-shadow: 0 1px 3px rgba($success, 0.3);
+    box-shadow: 0 2px 8px rgba($success, 0.35);
   }
 
   &.btn-secondary {
-    background: $surface;
-    color: $text;
-    border-color: $border;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    background: rgba(white, 0.08);
+    color: rgba(white, 0.85);
+    border-color: rgba(white, 0.15);
+    box-shadow: none;
   }
 
   &.btn-block {
     width: 100%;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 }
 
@@ -226,22 +262,47 @@ body {
   border: 1px solid transparent;
 
   &.chip-movie {
-    background: color.adjust($movie-color, $lightness: 44%);
-    color: color.adjust($movie-color, $lightness: -10%);
-    border-color: color.adjust($movie-color, $lightness: 30%);
+    background: color.mix($movie-color, white, 35%);
+    color: color.mix($movie-color, black, 75%);
+    border-color: color.mix($movie-color, white, 35%);
   }
 
   &.chip-series {
-    background: color.adjust($series-color, $lightness: 44%);
-    color: color.adjust($series-color, $lightness: -5%);
-    border-color: color.adjust($series-color, $lightness: 30%);
+    background: color.mix($series-color, white, 35%);
+    color: color.mix($series-color, black, 75%);
+    border-color: color.mix($series-color, white, 35%);
   }
 
   &.chip-nonvideo {
-    background: color.adjust($warn, $lightness: 44%);
-    color: color.adjust($warn, $lightness: -15%);
-    border-color: color.adjust($warn, $lightness: 30%);
+    background: color.mix($warn, white, 35%);
+    color: color.mix($warn, black, 75%);
+    border-color: color.mix($warn, white, 35%);
   }
+}
+
+.progress-wrap {
+  margin-bottom: 16px;
+}
+
+.progress-label {
+  font-size: 13px;
+  color: $muted;
+  margin-bottom: 6px;
+}
+
+.progress-track {
+  height: 6px;
+  background: $surface2;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid $border;
+}
+
+.progress-fill {
+  height: 100%;
+  background: $accent;
+  border-radius: 3px;
+  transition: width 0.15s ease;
 }
 
 // Alerts
@@ -252,15 +313,15 @@ body {
   line-height: 1.6;
 
   &.alert-error {
-    background: color.adjust($error, $lightness: 44%);
-    border: 1px solid color.adjust($error, $lightness: 28%);
-    color: color.adjust($error, $lightness: -8%);
+    background: color.mix($error, white, 25%);
+    border: 1px solid color.mix($error, white, 50%);
+    color: color.mix($error, black, 80%);
   }
 
   &.alert-success {
-    background: color.adjust($success, $lightness: 50%);
-    border: 1px solid color.adjust($success, $lightness: 32%);
-    color: color.adjust($success, $lightness: -10%);
+    background: color.mix($success, white, 20%);
+    border: 1px solid color.mix($success, white, 45%);
+    color: color.mix($success, black, 80%);
   }
 }
 
@@ -279,9 +340,10 @@ body {
 // Table
 .table-wrapper {
   overflow-x: auto;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid $border;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  background: $surface;
 }
 
 .sweep-table {
@@ -291,16 +353,18 @@ body {
   th {
     background: $surface2;
     color: $muted;
-    font-size: 12px;
-    letter-spacing: 0.2px;
-    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 11px 16px;
     text-align: left;
     border-bottom: 1px solid $border;
     white-space: nowrap;
   }
 
   td {
-    padding: 9px 14px;
+    padding: 10px 16px;
     border-bottom: 1px solid $border;
     vertical-align: middle;
     background: $surface;
@@ -378,13 +442,16 @@ body {
 }
 
 .col-action {
-  width: 60px;
+  width: 80px;
   text-align: center;
+  white-space: nowrap;
 
   input[type='checkbox'] {
     cursor: pointer;
     width: 15px;
     height: 15px;
+    vertical-align: middle;
+    margin-right: 4px;
 
     &:disabled {
       cursor: not-allowed;
@@ -400,20 +467,24 @@ body {
   border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
+  border: 1px solid transparent;
 
   &.badge-movie {
-    background: color.adjust($movie-color, $lightness: 44%);
-    color: color.adjust($movie-color, $lightness: -10%);
+    background: color.mix($movie-color, white, 35%);
+    color: color.mix($movie-color, black, 75%);
+    border-color: color.mix($movie-color, white, 35%);
   }
 
   &.badge-series {
-    background: color.adjust($series-color, $lightness: 44%);
-    color: color.adjust($series-color, $lightness: -5%);
+    background: color.mix($series-color, white, 35%);
+    color: color.mix($series-color, black, 75%);
+    border-color: color.mix($series-color, white, 35%);
   }
 
   &.badge-delete {
-    background: color.adjust($error, $lightness: 44%);
-    color: color.adjust($error, $lightness: -8%);
+    background: color.mix($warn, white, 35%);
+    color: color.mix($warn, black, 75%);
+    border-color: color.mix($warn, white, 35%);
   }
 }
 

@@ -1,20 +1,19 @@
 <div class="app-shell">
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="logo">&#x1F9F9; video-sweep-web</span>
-    </div>
-  </header>
 
   <div class="app-body">
 
     <!-- Left sidebar -->
     <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="logo-text">VIDEO SWEEP</span>
+      </div>
+
+      <div class="sidebar-content">
       <button
         class="btn btn-primary btn-block"
         (click)="scan()"
         [disabled]="state === 'scanning' || state === 'proceeding'">
         <span *ngIf="state === 'scanning'" class="spinner"></span>
-        <span *ngIf="state !== 'scanning'">&#x1F50D;</span>
         Scan
       </button>
 
@@ -65,9 +64,18 @@
           Show non-video files
         </label>
       </div>
+      </div>
     </aside>
 
     <main class="app-main">
+
+    <!-- Progress bar -->
+    <div class="progress-wrap" *ngIf="state === 'proceeding'">
+      <div class="progress-label">Processing {{ progressCurrent }} of {{ progressTotal }}&hellip;</div>
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="progressTotal ? (progressCurrent / progressTotal) * 100 : 0"></div>
+      </div>
+    </div>
 
     <!-- Summary chips -->
     <div class="summary" *ngIf="state === 'ready' || state === 'proceeding'">
@@ -86,7 +94,7 @@
     <!-- Result banner -->
     <div class="alert alert-success" *ngIf="state === 'done' && result">
       <strong>Done!</strong>
-      Moved {{ result.moved }} file{{ result.moved !== 1 ? 's' : '' }}, deleted {{ result.deleted }} non-video file{{ result.deleted !== 1 ? 's' : '' }}.
+      Moved {{ result.moved }} file{{ result.moved !== 1 ? 's' : '' }}<ng-container *ngIf="result.deleted > 0">, deleted {{ result.deleted }} non-video file{{ result.deleted !== 1 ? 's' : '' }}</ng-container>.
       <span *ngIf="result.errors.length > 0" class="warn-inline">
         {{ result.errors.length }} error{{ result.errors.length !== 1 ? 's' : '' }} occurred.
       </span>
@@ -103,8 +111,20 @@
             <th>Original File</th>
             <th>Type</th>
             <th>Destination</th>
-            <th class="col-action">Move</th>
-            <th class="col-action">Delete</th>
+            <th class="col-action">
+              <input type="checkbox"
+                [checked]="allMoveSelected"
+                [indeterminate]="someMoveSelected"
+                (change)="toggleAllMove($any($event.target).checked)" />
+              Move
+            </th>
+            <th class="col-action">
+              <input type="checkbox"
+                [checked]="allDeleteSelected"
+                [indeterminate]="someDeleteSelected"
+                (change)="toggleAllDelete($any($event.target).checked)" />
+              Delete
+            </th>
           </tr>
         </thead>
         <tbody>

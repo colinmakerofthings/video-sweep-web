@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SweepService } from './sweep.service';
-import { ScanRow, ScanResponse, ProceedResult, DirectoryConfig } from './sweep.types';
+import { ScanRow, ScanResponse, ProceedResult, ProceedEvent, DirectoryConfig } from './sweep.types';
 
 type AppState = 'idle' | 'scanning' | 'ready' | 'proceeding' | 'done' | 'error';
 
@@ -19,6 +19,8 @@ export class App implements OnInit {
   nonVideos: string[] = [];
   cleanUp = true;
   showNonVideos = true;
+  progressCurrent = 0;
+  progressTotal = 0;
   result: ProceedResult | null = null;
   errorMessage = '';
   config: DirectoryConfig | null = null;
@@ -67,11 +69,21 @@ export class App implements OnInit {
   }
 
   proceed(): void {
+    const toProcess = this.rows.filter(r => r.action !== 'skip');
     this.state = 'proceeding';
-    this.sweepService.proceed(this.rows.filter(r => r.action !== 'skip')).subscribe({
-      next: (data: ProceedResult) => {
-        this.result = data;
-        this.state = 'done';
+    this.progressCurrent = 0;
+    this.progressTotal = toProcess.length;
+
+    this.sweepService.proceed(toProcess).subscribe({
+      next: (event: ProceedEvent) => {
+        if (event.type === 'progress') {
+          this.progressCurrent = event.current;
+        } else {
+          this.result = event;
+          const failedSet = new Set(event.failedFiles);
+          this.rows = this.rows.filter(r => r.action === 'skip' || failedSet.has(r.file));
+          this.state = 'done';
+        }
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -108,6 +120,32 @@ export class App implements OnInit {
 
   setAction(row: ScanRow, action: 'move' | 'delete', checked: boolean): void {
     row.action = checked ? action : 'skip';
+  }
+
+  toggleAllMove(checked: boolean): void {
+    this.rows.filter(r => r.type !== 'delete').forEach(r => r.action = checked ? 'move' : 'skip');
+  }
+
+  toggleAllDelete(checked: boolean): void {
+    this.rows.forEach(r => r.action = checked ? 'delete' : 'skip');
+  }
+
+  get allMoveSelected(): boolean {
+    const eligible = this.rows.filter(r => r.type !== 'delete');
+    return eligible.length > 0 && eligible.every(r => r.action === 'move');
+  }
+
+  get someMoveSelected(): boolean {
+    const eligible = this.rows.filter(r => r.type !== 'delete');
+    return eligible.some(r => r.action === 'move') && !this.allMoveSelected;
+  }
+
+  get allDeleteSelected(): boolean {
+    return this.rows.length > 0 && this.rows.every(r => r.action === 'delete');
+  }
+
+  get someDeleteSelected(): boolean {
+    return this.rows.some(r => r.action === 'delete') && !this.allDeleteSelected;
   }
 
   onCleanUpChange(checked: boolean): void {
