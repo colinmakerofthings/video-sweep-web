@@ -39,30 +39,28 @@ router.post('/', (req: Request, res: Response) => {
 
   const result: ProceedResult = { moved: 0, deleted: 0, errors: [] };
 
+  const sourceDir = process.env.SOURCE_DIR ?? '/media/source';
+
   for (const row of rows) {
-    try {
-      ensureDir(path.dirname(row.targetPath));
-      fs.renameSync(row.file, row.targetPath);
-      result.moved++;
-
-      // Clean up the source directory chain
-      removeEmptyDirs(path.dirname(row.file), process.env.SOURCE_DIR ?? '/media/source');
-    } catch (err: unknown) {
-      result.errors.push(
-        `Move failed: ${row.file} → ${row.targetPath}: ${err instanceof Error ? err.message : String(err)}`
-      );
-    }
-  }
-
-  if (cleanUp) {
-    for (const nonVideo of nonVideos) {
+    if (row.type !== 'delete') {
       try {
-        fs.unlinkSync(nonVideo);
-        result.deleted++;
-        removeEmptyDirs(path.dirname(nonVideo), '/media/source');
+        ensureDir(path.dirname(row.targetPath));
+        fs.renameSync(row.file, row.targetPath);
+        result.moved++;
+        removeEmptyDirs(path.dirname(row.file), sourceDir);
       } catch (err: unknown) {
         result.errors.push(
-          `Delete failed: ${nonVideo}: ${err instanceof Error ? err.message : String(err)}`
+          `Move failed: ${row.file} → ${row.targetPath}: ${err instanceof Error ? err.message : String(err)}`
+        );
+      }
+    } else if (cleanUp) {
+      try {
+        fs.unlinkSync(row.file);
+        result.deleted++;
+        removeEmptyDirs(path.dirname(row.file), sourceDir);
+      } catch (err: unknown) {
+        result.errors.push(
+          `Delete failed: ${row.file}: ${err instanceof Error ? err.message : String(err)}`
         );
       }
     }

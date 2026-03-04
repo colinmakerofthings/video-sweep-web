@@ -45,6 +45,10 @@
           <input type="checkbox" [(ngModel)]="cleanUp" />
           Delete non-video files
         </label>
+        <label class="sidebar-toggle">
+          <input type="checkbox" [(ngModel)]="showNonVideos" />
+          Show non-video files
+        </label>
       </div>
     </aside>
 
@@ -72,8 +76,8 @@
     <div class="summary" *ngIf="state === 'ready' || state === 'proceeding'">
       <span class="chip chip-movie">{{ movieCount }} movie{{ movieCount !== 1 ? 's' : '' }}</span>
       <span class="chip chip-series">{{ seriesCount }} episode{{ seriesCount !== 1 ? 's' : '' }}</span>
-      <span class="chip chip-nonvideo" *ngIf="nonVideos.length > 0">
-        {{ nonVideos.length }} non-video file{{ nonVideos.length !== 1 ? 's' : '' }}
+      <span class="chip chip-nonvideo" *ngIf="deleteCount > 0">
+        {{ deleteCount }} non-video file{{ deleteCount !== 1 ? 's' : '' }}
       </span>
     </div>
 
@@ -110,15 +114,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of rows" [class.row-movie]="row.type === 'movie'" [class.row-series]="row.type === 'series'">
+          <tr *ngFor="let row of visibleRows" [class.row-movie]="row.type === 'movie'" [class.row-series]="row.type === 'series'" [class.row-delete]="row.type === 'delete'">
             <td class="cell-file" [title]="row.file">{{ row.file | slice:row.file.lastIndexOf('/') + 1 }}</td>
             <td>
-              <span class="badge" [class.badge-movie]="row.type === 'movie'" [class.badge-series]="row.type === 'series'">
-                {{ row.type }}
+              <span class="badge" [class.badge-movie]="row.type === 'movie'" [class.badge-series]="row.type === 'series'" [class.badge-delete]="row.type === 'delete'">
+                {{ row.type === 'delete' ? 'non-video' : row.type === 'series' ? 'episode' : row.type }}
               </span>
             </td>
-            <td>{{ row.newFilename }}</td>
-            <td class="cell-dest" [title]="row.targetPath">{{ row.targetPath }}</td>
+            <td>{{ row.newFilename || '&mdash;' }}</td>
+            <td class="cell-dest" [title]="row.targetPath">{{ row.targetPath || '&mdash;' }}</td>
             <ng-container *ngIf="hasOmdb">
               <td>
                 <span class="valid-badge"

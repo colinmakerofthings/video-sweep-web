@@ -18,6 +18,7 @@ export class App implements OnInit {
   rows: ScanRow[] = [];
   nonVideos: string[] = [];
   cleanUp = true;
+  showNonVideos = true;
   result: ProceedResult | null = null;
   errorMessage = '';
   config: DirectoryConfig | null = null;
@@ -50,10 +51,12 @@ export class App implements OnInit {
         this.rows = data.rows;
         this.nonVideos = data.nonVideos;
         this.state = 'ready';
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = err?.error?.error ?? err.message ?? 'Scan failed';
         this.state = 'error';
+        this.cdr.detectChanges();
       },
     });
   }
@@ -64,10 +67,12 @@ export class App implements OnInit {
       next: (data: ProceedResult) => {
         this.result = data;
         this.state = 'done';
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = err?.error?.error ?? err.message ?? 'Proceed failed';
         this.state = 'error';
+        this.cdr.detectChanges();
       },
     });
   }
@@ -90,5 +95,13 @@ export class App implements OnInit {
 
   get seriesCount(): number {
     return this.rows.filter((r) => r.type === 'series').length;
+  }
+
+  get deleteCount(): number {
+    return this.rows.filter((r) => r.type === 'delete').length;
+  }
+
+  get visibleRows(): ScanRow[] {
+    return this.showNonVideos ? this.rows : this.rows.filter((r) => r.type !== 'delete');
   }
 }

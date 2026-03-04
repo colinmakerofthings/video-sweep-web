@@ -334,6 +334,15 @@ body {
       border-left: 3px solid $series-color;
     }
   }
+
+  &.row-delete {
+    td:first-child {
+      border-left: 3px solid $error;
+    }
+    td {
+      color: $muted;
+    }
+  }
 }
 
 .cell-file,
@@ -363,6 +372,11 @@ body {
   &.badge-series {
     background: color.adjust($series-color, $lightness: 44%);
     color: color.adjust($series-color, $lightness: -5%);
+  }
+
+  &.badge-delete {
+    background: color.adjust($error, $lightness: 44%);
+    color: color.adjust($error, $lightness: -8%);
   }
 }
 

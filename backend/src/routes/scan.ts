@@ -37,7 +37,11 @@ router.post('/', async (_req: Request, res: Response) => {
       }
     }
 
-    const response: ScanResponse = { rows, nonVideos };
+    for (const filePath of nonVideos) {
+      rows.push({ file: filePath, type: 'delete', newFilename: '', targetPath: '', valid: '-', suggested: '' });
+    }
+
+    const response: ScanResponse = { rows, nonVideos: [] };
     res.json(response);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
