@@ -30,15 +30,15 @@ router.post('/', async (_req: Request, res: Response) => {
         const year = yearMatch ? yearMatch[1] : '';
         const title = stem.replace(/\s*\[\d{4}\]/, '').trim();
         const { valid, suggested } = await validateMovie(title, year, apiKey);
-        rows.push({ file: filePath, type, newFilename, targetPath, valid, suggested });
+        rows.push({ file: filePath, type, action: 'move', newFilename, targetPath, valid, suggested });
       } else {
         const { newFilename, targetPath } = seriesNewFilename(filePath, SERIES_DIR);
-        rows.push({ file: filePath, type, newFilename, targetPath, valid: '-', suggested: '' });
+        rows.push({ file: filePath, type, action: 'move', newFilename, targetPath, valid: '-', suggested: '' });
       }
     }
 
     for (const filePath of nonVideos) {
-      rows.push({ file: filePath, type: 'delete', newFilename: '', targetPath: '', valid: '-', suggested: '' });
+      rows.push({ file: filePath, type: 'delete', action: 'delete', newFilename: '', targetPath: '', valid: '-', suggested: '' });
     }
 
     const response: ScanResponse = { rows, nonVideos: [] };

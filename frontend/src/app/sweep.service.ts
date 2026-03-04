@@ -13,8 +13,8 @@ export class SweepService {
     return this.http.post<ScanResponse>(`${this.base}/scan`, {});
   }
 
-  proceed(rows: ScanRow[], nonVideos: string[], cleanUp: boolean): Observable<ProceedResult> {
-    return this.http.post<ProceedResult>(`${this.base}/proceed`, { rows, nonVideos, cleanUp });
+  proceed(rows: ScanRow[]): Observable<ProceedResult> {
+    return this.http.post<ProceedResult>(`${this.base}/proceed`, { rows });
   }
 
   getConfig(): Observable<DirectoryConfig> {

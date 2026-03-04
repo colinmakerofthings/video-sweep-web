@@ -1,6 +1,7 @@
 export interface ScanRow {
   file: string;
   type: 'movie' | 'series' | 'delete';
+  action: 'move' | 'delete' | 'skip';
   newFilename: string;
   targetPath: string;
   valid: 'Yes' | 'No' | '-';
