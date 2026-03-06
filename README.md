@@ -187,7 +187,7 @@ GET http://<host>:3001/api/status
 
 Both backend and frontend use [Vitest](https://vitest.dev/).
 
-### Backend
+### Backend Testing
 
 ```bash
 cd backend
@@ -197,7 +197,7 @@ npm run test:watch  # watch mode
 
 Tests cover the classifier, renamer, and file-finder modules.
 
-### Frontend
+### Frontend Testing
 
 ```bash
 cd frontend
