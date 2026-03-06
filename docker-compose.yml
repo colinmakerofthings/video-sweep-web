@@ -1,6 +1,7 @@
 services:
   backend:
     build: ./backend
+    image: ghcr.io/colinmakerofthings/video-sweep-web-backend:latest
     restart: unless-stopped
     environment:
       - OMDB_API_KEY=${OMDB_API_KEY:-}
@@ -14,6 +15,7 @@ services:
 
   frontend:
     build: ./frontend
+    image: ghcr.io/colinmakerofthings/video-sweep-web-frontend:latest
     restart: unless-stopped
     ports:
       - "8080:80"
