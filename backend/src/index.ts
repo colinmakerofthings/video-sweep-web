@@ -10,6 +10,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 // Routes must be imported after dotenv.config()
 import scanRouter from './routes/scan';
 import proceedRouter from './routes/proceed';
+import statusRouter from './routes/status';
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 3001);
@@ -31,6 +32,7 @@ app.get('/api/config', (_req, res) => {
 
 app.use('/api/scan', scanRouter);
 app.use('/api/proceed', proceedRouter);
+app.use('/api/status', statusRouter);
 
 app.listen(PORT, () => {
   console.log(`video-sweep-web backend listening on port ${PORT}`);

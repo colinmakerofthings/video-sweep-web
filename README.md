@@ -155,6 +155,26 @@ npm start
 
 Then open `http://localhost:4200`. The Angular dev server proxies `/api/*` to `http://localhost:3001` — add a `proxy.conf.json` if needed.
 
+## API reference
+
+### `GET /api/status`
+
+Returns the number of video files currently present in `SOURCE_DIR`. Does not classify or call OMDb — it only counts, so it is fast and cheap to poll.
+
+**Response**
+
+```json
+{ "count": 42 }
+```
+
+`count` is the number of pending video files (`.mp4`, `.mkv`, `.avi`, `.m4v`). Non-video files are excluded.
+
+The endpoint is exposed directly by the backend on port `3001`, not through the nginx proxy, so call it as:
+
+```
+GET http://<host>:3001/api/status
+```
+
 ## Testing
 
 Both backend and frontend use [Vitest](https://vitest.dev/).
