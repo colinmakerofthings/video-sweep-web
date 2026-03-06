@@ -45,41 +45,7 @@ OMDB_API_KEY=                  # optional free key from omdbapi.com
 docker compose up --build -d
 ```
 
-The first build downloads base images and compiles the app — it usually takes a couple of minutes. Subsequent starts (without `--build`) are much faster.
-
 Open `http://<your-host-ip>:8080` in a browser. If you are running Docker locally, use `http://localhost:8080`.
-
-#### Verify the containers are healthy
-
-```bash
-docker compose ps
-```
-
-Both `backend` and `frontend` should show **Up**. If a container exited, inspect its logs:
-
-```bash
-docker compose logs backend
-docker compose logs frontend
-```
-
-## Stopping and updating
-
-### Stop the app
-
-```bash
-docker compose down
-```
-
-This stops and removes the containers but leaves your media files and the `.env` file untouched.
-
-### Update to the latest version
-
-```bash
-git pull
-docker compose up --build -d
-```
-
-`docker compose up --build` rebuilds the images from the updated source and recreates the containers in one step.
 
 ## Naming conventions
 
