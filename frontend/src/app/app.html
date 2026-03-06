@@ -148,6 +148,7 @@
               <span class="cell-dest-path">{{ row.targetPath || '&mdash;' }}</span>
               <span *ngIf="row.valid === 'No' && row.suggested" class="omdb-suggestion">
                 &#x26A0; OMDb suggests: {{ row.suggested }}
+                <button class="btn-accept" (click)="acceptSuggestion(row)">&#x2713; Accept</button>
               </span>
             </td>
             <td class="col-action">
