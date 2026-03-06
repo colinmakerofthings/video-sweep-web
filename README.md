@@ -68,6 +68,7 @@ Output: `Breaking Bad S01E01.mkv` → `$SERIES_DIR/Breaking Bad/Season 1/Breakin
 3. Submit the form — OMDb will send an activation link to your inbox
 4. Click the activation link; your key is then shown on the confirmation page
 5. Copy the key into your `.env` file:
+
    ```env
    OMDB_API_KEY=your_key_here
    ```
@@ -168,7 +169,7 @@ Then open `http://localhost:4200`. The Angular dev server proxies `/api/*` to `h
 
 Returns the number of video files currently present in `SOURCE_DIR`. Does not classify or call OMDb — it only counts, so it is fast and cheap to poll.
 
-**Response**
+### Response
 
 ```json
 { "count": 42 }
@@ -178,7 +179,7 @@ Returns the number of video files currently present in `SOURCE_DIR`. Does not cl
 
 The endpoint is exposed directly by the backend on port `3001`, not through the nginx proxy, so call it as:
 
-```
+```http
 GET http://<host>:3001/api/status
 ```
 
