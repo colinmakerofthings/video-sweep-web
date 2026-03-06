@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SweepService } from './sweep.service';
@@ -13,7 +13,7 @@ type AppState = 'idle' | 'scanning' | 'ready' | 'proceeding' | 'done' | 'error';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App implements OnInit, AfterViewChecked {
+export class App implements OnInit {
   state: AppState = 'idle';
   rows: ScanRow[] = [];
   nonVideos: string[] = [];
@@ -25,6 +25,7 @@ export class App implements OnInit, AfterViewChecked {
   result: ProceedResult | null = null;
   errorMessage = '';
   config: DirectoryConfig | null = null;
+  selectedRow: ScanRow | null = null;
 
   constructor(private sweepService: SweepService, private cdr: ChangeDetectorRef) {}
 
@@ -32,8 +33,8 @@ export class App implements OnInit, AfterViewChecked {
     this.loadConfig();
   }
 
-  ngAfterViewChecked(): void {
-    (window as any).lucide?.createIcons();
+  private refreshIcons(): void {
+    setTimeout(() => (window as any).lucide?.createIcons(), 0);
   }
 
   private loadConfig(): void {
@@ -41,6 +42,7 @@ export class App implements OnInit, AfterViewChecked {
       next: (cfg) => {
         this.config = cfg;
         this.cdr.detectChanges();
+        this.refreshIcons();
       },
       error: () => setTimeout(() => this.loadConfig(), 2000),
     });
@@ -52,6 +54,7 @@ export class App implements OnInit, AfterViewChecked {
     this.nonVideos = [];
     this.errorMessage = '';
     this.result = null;
+    this.selectedRow = null;
 
     this.sweepService.scan().subscribe({
       next: (data: ScanResponse) => {
@@ -64,6 +67,7 @@ export class App implements OnInit, AfterViewChecked {
         this.nonVideos = data.nonVideos;
         this.state = 'ready';
         this.cdr.detectChanges();
+        this.refreshIcons();
       },
       error: (err) => {
         this.errorMessage = err?.error?.error ?? err.message ?? 'Scan failed';
@@ -90,6 +94,7 @@ export class App implements OnInit, AfterViewChecked {
           this.state = 'done';
         }
         this.cdr.detectChanges();
+        this.refreshIcons();
       },
       error: (err) => {
         this.errorMessage = err?.error?.error ?? err.message ?? 'Proceed failed';
@@ -105,6 +110,8 @@ export class App implements OnInit, AfterViewChecked {
     this.nonVideos = [];
     this.result = null;
     this.errorMessage = '';
+    this.selectedRow = null;
+    this.refreshIcons();
   }
 
   get movieCount(): number {
@@ -117,6 +124,10 @@ export class App implements OnInit, AfterViewChecked {
 
   get deleteCount(): number {
     return this.rows.filter((r) => r.type === 'delete').length;
+  }
+
+  get suggestedCount(): number {
+    return this.rows.filter((r) => r.valid === 'No' && !!r.suggested).length;
   }
 
   get visibleRows(): ScanRow[] {
@@ -151,6 +162,10 @@ export class App implements OnInit, AfterViewChecked {
 
   get someDeleteSelected(): boolean {
     return this.rows.some(r => r.action === 'delete') && !this.allDeleteSelected;
+  }
+
+  selectRow(row: ScanRow): void {
+    this.selectedRow = this.selectedRow === row ? null : row;
   }
 
   acceptSuggestion(row: ScanRow): void {

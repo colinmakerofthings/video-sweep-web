@@ -13,7 +13,7 @@ A web-based variant of my [video-sweep](https://github.com/colinmakerofthings/vi
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/yourname/video-sweep-web.git
+git clone https://github.com/colinmakerofthings/video-sweep-web.git
 cd video-sweep-web
 ```
 
