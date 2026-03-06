@@ -1,0 +1,64 @@
+:root {
+  /* --- Colors --------------------------------------------- */
+  --bg:              #111113;
+  --sidebar-bg:      #09090b;
+  --card-bg:         #1c1c1f;
+  --border:          #2e2e32;
+  --border-subtle:   #232326;
+
+  --primary:         #f87171;
+  --primary-hover:   #fca5a5;
+  --primary-muted:   rgba(248, 113, 113, 0.15);
+
+  --success:         #22c55e;
+  --success-muted:   rgba(34, 197, 94, 0.12);
+  --danger:          #ef4444;
+  --danger-muted:    rgba(239, 68, 68, 0.15);
+  --warn:            #fb923c;
+  --warn-muted:      rgba(251, 146, 60, 0.15);
+  --suggest:         #22d3ee;
+  --suggest-muted:   rgba(34, 211, 238, 0.12);
+
+  --text:            #f1f1f1;
+  --text-muted:      #a1a1aa;
+  --text-subtle:     #71717a;
+
+  --movie:           #e4e4e7;
+  --movie-bg:        #27272a;
+  --movie-muted:     rgba(228, 228, 231, 0.12);
+  --series:          #fbbf24;
+  --series-muted:    rgba(251, 191, 36, 0.12);
+
+  /* --- Spacing -------------------------------------------- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  28px;
+  --space-8:  32px;
+
+  /* --- Radius --------------------------------------------- */
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-pill: 99px;
+
+  /* --- Shadows -------------------------------------------- */
+  --shadow-card:        0 1px 3px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-btn-primary: 0 2px 10px rgba(248,113,113,0.40);
+  --shadow-btn-success: 0 2px 8px rgba(255,255,255,0.15);
+
+  /* --- Typography ----------------------------------------- */
+  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', 'Cascadia Code', 'Consolas', monospace;
+
+  --text-2xs: 10px;
+  --text-xs:  11px;
+  --text-sm:  12px;
+  --text-base: 13px;
+  --text-md:  14px;
+  --text-lg:  16px;
+}
