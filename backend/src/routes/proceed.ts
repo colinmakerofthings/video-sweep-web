@@ -36,15 +36,31 @@ function removeEmptyDirs(dir: string, stopAt: string): void {
   }
 }
 
-// Recursively remove ALL empty directories inside root (post-order traversal)
-function removeAllEmptyDirs(dir: string): void {
+// Recursively remove ALL empty directories inside root (post-order traversal),
+// but never remove root itself.
+function removeAllEmptyDirs(dir: string, stopAt: string): void {
+  if (dir === stopAt) {
+    // Clean up children but never delete the root itself
+    try {
+      const entries = fs.readdirSync(dir);
+      for (const entry of entries) {
+        const full = path.join(dir, entry);
+        try {
+          if (fs.statSync(full).isDirectory()) {
+            removeAllEmptyDirs(full, stopAt);
+          }
+        } catch { /* skip unreadable entries */ }
+      }
+    } catch { /* skip if dir is unreadable */ }
+    return;
+  }
   try {
     const entries = fs.readdirSync(dir);
     for (const entry of entries) {
       const full = path.join(dir, entry);
       try {
         if (fs.statSync(full).isDirectory()) {
-          removeAllEmptyDirs(full);
+          removeAllEmptyDirs(full, stopAt);
         }
       } catch { /* skip unreadable entries */ }
     }
@@ -87,7 +103,7 @@ router.post('/', (req: Request, res: Response) => {
   const processNext = (i: number): void => {
     if (i >= rows.length) {
       if (deleteEmptyFolders) {
-        removeAllEmptyDirs(sourceDir);
+        removeAllEmptyDirs(sourceDir, sourceDir);
       }
       emit({ type: 'done', ...result });
       res.end();
