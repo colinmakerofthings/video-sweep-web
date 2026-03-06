@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SweepService } from './sweep.service';
 import { ScanRow, ScanResponse, ProceedResult, ProceedEvent, DirectoryConfig } from './sweep.types';
+import { version } from '../../package.json';
 
 type AppState = 'idle' | 'scanning' | 'ready' | 'proceeding' | 'done' | 'error';
 
@@ -14,6 +15,7 @@ type AppState = 'idle' | 'scanning' | 'ready' | 'proceeding' | 'done' | 'error';
   styleUrl: './app.scss',
 })
 export class App implements OnInit {
+  readonly appVersion = version;
   state: AppState = 'idle';
   rows: ScanRow[] = [];
   nonVideos: string[] = [];
