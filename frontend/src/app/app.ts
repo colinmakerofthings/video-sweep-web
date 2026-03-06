@@ -149,6 +149,14 @@ export class App implements OnInit {
     return this.rows.some(r => r.action === 'delete') && !this.allDeleteSelected;
   }
 
+  acceptSuggestion(row: ScanRow): void {
+    const ext = row.file.substring(row.file.lastIndexOf('.'));
+    row.newFilename = row.suggested + ext;
+    row.targetPath = this.config!.moviesDir + '/' + row.newFilename;
+    row.valid = 'Yes';
+    row.action = 'move';
+  }
+
   onCleanUpChange(checked: boolean): void {
     this.cleanUp = checked;
     this.rows.filter(r => r.type === 'delete').forEach(r => r.action = checked ? 'delete' : 'skip');
