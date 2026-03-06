@@ -154,3 +154,30 @@ npm start
 ```
 
 Then open `http://localhost:4200`. The Angular dev server proxies `/api/*` to `http://localhost:3001` — add a `proxy.conf.json` if needed.
+
+## Testing
+
+Both backend and frontend use [Vitest](https://vitest.dev/).
+
+### Backend
+
+```bash
+cd backend
+npm test            # single run
+npm run test:watch  # watch mode
+```
+
+Tests cover the classifier, renamer, and file-finder modules.
+
+### Frontend
+
+```bash
+cd frontend
+npm test
+```
+
+Tests cover component logic including action toggling, OMDb suggestion acceptance, computed counts, and select-all state.
+
+## CI
+
+GitHub Actions runs both test suites on every push to `main` and on pull requests. See `.github/workflows/ci.yml`.
