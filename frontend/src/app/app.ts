@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SweepService } from './sweep.service';
@@ -13,7 +13,7 @@ type AppState = 'idle' | 'scanning' | 'ready' | 'proceeding' | 'done' | 'error';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App implements OnInit {
+export class App implements OnInit, AfterViewChecked {
   state: AppState = 'idle';
   rows: ScanRow[] = [];
   nonVideos: string[] = [];
@@ -30,6 +30,10 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     this.loadConfig();
+  }
+
+  ngAfterViewChecked(): void {
+    (window as any).lucide?.createIcons();
   }
 
   private loadConfig(): void {
