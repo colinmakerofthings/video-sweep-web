@@ -17,9 +17,19 @@ export class App implements OnInit {
   state: AppState = 'idle';
   rows: ScanRow[] = [];
   nonVideos: string[] = [];
-  cleanUp = true;
-  deleteEmptyFolders = true;
-  showNonVideos = true;
+
+  private _cleanUp = localStorage.getItem('opt.cleanUp') !== 'false';
+  get cleanUp() { return this._cleanUp; }
+  set cleanUp(v: boolean) { this._cleanUp = v; localStorage.setItem('opt.cleanUp', String(v)); }
+
+  private _deleteEmptyFolders = localStorage.getItem('opt.deleteEmptyFolders') !== 'false';
+  get deleteEmptyFolders() { return this._deleteEmptyFolders; }
+  set deleteEmptyFolders(v: boolean) { this._deleteEmptyFolders = v; localStorage.setItem('opt.deleteEmptyFolders', String(v)); }
+
+  private _showNonVideos = localStorage.getItem('opt.showNonVideos') !== 'false';
+  get showNonVideos() { return this._showNonVideos; }
+  set showNonVideos(v: boolean) { this._showNonVideos = v; localStorage.setItem('opt.showNonVideos', String(v)); }
+
   progressCurrent = 0;
   progressTotal = 0;
   result: ProceedResult | null = null;
