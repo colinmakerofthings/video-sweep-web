@@ -18,6 +18,7 @@ export class App implements OnInit {
   rows: ScanRow[] = [];
   nonVideos: string[] = [];
   cleanUp = true;
+  deleteEmptyFolders = true;
   showNonVideos = true;
   progressCurrent = 0;
   progressTotal = 0;
@@ -74,7 +75,7 @@ export class App implements OnInit {
     this.progressCurrent = 0;
     this.progressTotal = toProcess.length;
 
-    this.sweepService.proceed(toProcess).subscribe({
+    this.sweepService.proceed(toProcess, this.deleteEmptyFolders).subscribe({
       next: (event: ProceedEvent) => {
         if (event.type === 'progress') {
           this.progressCurrent = event.current;

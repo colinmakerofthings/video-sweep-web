@@ -48,8 +48,8 @@ export function movieNewFilename(
 
   if (yearMatch) {
     year = yearMatch[1];
-    // Everything before the year
-    title = stem.slice(0, yearMatch.index!).replace(/[._\-]+/g, ' ').trim();
+    // Everything before the year — also strip any opening bracket that wrapped the year
+    title = stem.slice(0, yearMatch.index!).replace(/[._\-]+/g, ' ').replace(/[\[(]+$/, '').trim();
   } else {
     // No year — use full stem as title
     title = stem.replace(/[._\-]+/g, ' ').trim();

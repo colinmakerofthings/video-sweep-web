@@ -13,12 +13,12 @@ export class SweepService {
     return this.http.post<ScanResponse>(`${this.base}/scan`, {});
   }
 
-  proceed(rows: ScanRow[]): Observable<ProceedEvent> {
+  proceed(rows: ScanRow[], deleteEmptyFolders: boolean = true): Observable<ProceedEvent> {
     return new Observable(observer => {
       fetch(`${this.base}/proceed`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rows }),
+        body: JSON.stringify({ rows, deleteEmptyFolders }),
       }).then(async (res) => {
         if (!res.ok || !res.body) {
           observer.error(new Error(`HTTP ${res.status}`));
