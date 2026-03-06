@@ -1,7 +1,9 @@
+@import './theme.css';
+
 /* Global styles */
 html, body {
   margin: 0;
   padding: 0;
-  background: #f5f6f8;
+  background: var(--bg);
   min-height: 100vh;
 }

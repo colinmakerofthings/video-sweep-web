@@ -1,0 +1,61 @@
+:root {
+  /* ─── Colors ─────────────────────────────────────────── */
+  --bg:              #f4f6f9;
+  --sidebar-bg:      #0f172a;
+  --card-bg:         #ffffff;
+  --border:          #e2e8f0;
+  --border-subtle:   #edf1f6;
+
+  --primary:         #3b82f6;
+  --primary-hover:   #2563eb;
+  --primary-muted:   rgba(59, 130, 246, 0.12);
+
+  --success:         #16a34a;
+  --success-muted:   rgba(22, 163, 74, 0.10);
+  --danger:          #dc2626;
+  --danger-muted:    rgba(220, 38, 38, 0.10);
+  --warn:            #d97706;
+  --warn-muted:      rgba(217, 119, 6, 0.10);
+
+  --text:            #0f172a;
+  --text-muted:      #64748b;
+  --text-subtle:     #94a3b8;
+
+  --movie:           #2563eb;
+  --movie-muted:     rgba(37, 99, 235, 0.10);
+  --series:          #7c3aed;
+  --series-muted:    rgba(124, 58, 237, 0.10);
+
+  /* ─── Spacing ────────────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  28px;
+  --space-8:  32px;
+
+  /* ─── Radius ─────────────────────────────────────────── */
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   10px;
+  --radius-xl:   14px;
+  --radius-pill: 99px;
+
+  /* ─── Shadows ────────────────────────────────────────── */
+  --shadow-card:        0 1px 3px rgba(15,23,42,0.06), 0 4px 16px rgba(15,23,42,0.06);
+  --shadow-btn-primary: 0 2px 8px rgba(59,130,246,0.35);
+  --shadow-btn-success: 0 2px 8px rgba(22,163,74,0.30);
+
+  /* ─── Typography ─────────────────────────────────────── */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Consolas', 'Fira Code', monospace;
+
+  --text-2xs: 10px;
+  --text-xs:  11px;
+  --text-sm:  12px;
+  --text-base: 13px;
+  --text-md:  14px;
+  --text-lg:  16px;
+}
