@@ -2,8 +2,13 @@
 
   <div class="app-body">
 
+    <!-- Mobile header bar -->
+    <button class="menu-toggle" (click)="toggleSidebar()" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+
     <!-- Left sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" [class.sidebar-open]="sidebarOpen">
       <div class="sidebar-header">
         <div class="sidebar-brand">
           <svg class="sidebar-brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -93,6 +98,9 @@
       </div>
     </aside>
 
+    <!-- Mobile backdrop -->
+    <div class="sidebar-backdrop" [class.sidebar-backdrop-visible]="sidebarOpen" (click)="closeSidebar()"></div>
+
     <main class="app-main">
     <div class="page-content">
 
@@ -179,29 +187,29 @@
               [class.row-delete]="row.type === 'delete'"
               [class.row-skip]="row.action === 'skip'"
               [class.row-omdb-warn]="row.valid === 'No'">
-            <td class="cell-file" [title]="row.file">
+            <td class="cell-file" data-label="Source" [title]="row.file">
               <span class="file-name">{{ row.file | slice:row.file.lastIndexOf('/') + 1 }}</span>
               <span class="file-dir">{{ row.file | slice:0:(row.file.lastIndexOf('/') + 1) }}</span>
             </td>
-            <td>
+            <td data-label="Type">
               <span class="badge" [class.badge-movie]="row.type === 'movie'" [class.badge-series]="row.type === 'series'" [class.badge-delete]="row.type === 'delete'">
                 {{ row.type === 'delete' ? 'non-video' : row.type === 'series' ? 'episode' : row.type }}
               </span>
             </td>
-            <td class="cell-dest" [title]="row.targetPath">
+            <td class="cell-dest" data-label="Destination" [title]="row.targetPath">
               <span class="cell-dest-path">{{ row.targetPath || '&mdash;' }}</span>
               <span *ngIf="row.valid === 'No' && row.suggested" class="omdb-suggestion">
                 <i data-lucide="alert-triangle"></i> OMDb suggests: {{ row.suggested }}
                 <button class="btn-accept" (click)="acceptSuggestion(row)"><i data-lucide="check"></i> Accept</button>
               </span>
             </td>
-            <td class="col-action">
+            <td class="col-action" data-label="Move">
               <input type="checkbox"
                 [checked]="row.action === 'move'"
                 [disabled]="row.type === 'delete'"
                 (change)="setAction(row, 'move', $any($event.target).checked)" />
             </td>
-            <td class="col-action">
+            <td class="col-action" data-label="Delete">
               <input type="checkbox"
                 [checked]="row.action === 'delete'"
                 (change)="setAction(row, 'delete', $any($event.target).checked)" />
@@ -212,8 +220,9 @@
       </div>
       </div>
 
-      <!-- Preview panel -->
-      <div class="preview-panel" *ngIf="selectedRow">
+      <!-- Preview panel (bottom sheet on mobile) -->
+      <div class="preview-sheet-overlay" *ngIf="selectedRow" (click)="selectedRow = null"></div>
+      <div class="preview-panel" *ngIf="selectedRow" (click)="$event.stopPropagation()">
         <div class="preview-panel-header">
           <span class="preview-panel-title">{{ selectedRow.file | slice:selectedRow.file.lastIndexOf('/') + 1 }}</span>
           <button class="preview-close" (click)="selectedRow = null">&times;</button>

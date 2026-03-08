@@ -38,6 +38,7 @@ export class App implements OnInit {
   errorMessage = '';
   config: DirectoryConfig | null = null;
   selectedRow: ScanRow | null = null;
+  sidebarOpen = false;
 
   constructor(private sweepService: SweepService, private cdr: ChangeDetectorRef) {}
 
@@ -178,6 +179,15 @@ export class App implements OnInit {
 
   selectRow(row: ScanRow): void {
     this.selectedRow = this.selectedRow === row ? null : row;
+    this.sidebarOpen = false;
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen = false;
   }
 
   acceptSuggestion(row: ScanRow): void {
