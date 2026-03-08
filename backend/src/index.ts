@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import pinoHttp from 'pino-http';
+import logger from './lib/logger';
 
 // Load .env from the repo root BEFORE importing routes so that module-level
 // constants in scan.ts / proceed.ts (e.g. SOURCE_DIR) read the correct values
@@ -16,6 +18,7 @@ const app = express();
 const PORT = Number(process.env.PORT ?? 3001);
 
 app.use(cors());
+app.use(pinoHttp({ logger }));
 app.use(express.json({ limit: '10mb' }));
 
 app.get('/api/health', (_req, res) => {
@@ -35,5 +38,5 @@ app.use('/api/proceed', proceedRouter);
 app.use('/api/status', statusRouter);
 
 app.listen(PORT, () => {
-  console.log(`video-sweep-web backend listening on port ${PORT}`);
+  logger.info({ port: PORT }, 'server started');
 });

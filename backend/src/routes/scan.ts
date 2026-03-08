@@ -4,6 +4,7 @@ import { classify } from '../lib/classifier';
 import { movieNewFilename, seriesNewFilename } from '../lib/renamer';
 import { validateMovie } from '../lib/omdb';
 import { ScanResponse, ScanRow } from '../lib/types';
+import logger from '../lib/logger';
 
 const router = Router();
 
@@ -14,7 +15,9 @@ router.post('/', async (_req: Request, res: Response) => {
   const SERIES_DIR = process.env.SERIES_DIR ?? '/media/series';
 
   try {
+    logger.info({ sourceDir: SOURCE_DIR }, 'scan started');
     const { videos, nonVideos } = findFiles(SOURCE_DIR);
+    logger.info({ videoCount: videos.length, nonVideoCount: nonVideos.length }, 'files found');
     const apiKey = process.env.OMDB_API_KEY ?? '';
 
     const rows: ScanRow[] = [];
@@ -30,6 +33,7 @@ router.post('/', async (_req: Request, res: Response) => {
         const year = yearMatch ? yearMatch[1] : '';
         const title = stem.replace(/\s*\[\d{4}\]/, '').trim();
         const { valid, suggested } = await validateMovie(title, year, apiKey);
+        logger.info({ file: filePath, title, year, valid, suggested }, 'omdb result');
         rows.push({ file: filePath, type, action: 'move', newFilename, targetPath, valid, suggested });
       } else {
         const { newFilename, targetPath } = seriesNewFilename(filePath, SERIES_DIR);
@@ -41,10 +45,12 @@ router.post('/', async (_req: Request, res: Response) => {
       rows.push({ file: filePath, type: 'delete', action: 'delete', newFilename: '', targetPath: '', valid: '-', suggested: '' });
     }
 
+    logger.info({ rowCount: rows.length }, 'scan complete');
     const response: ScanResponse = { rows, nonVideos: [] };
     res.json(response);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
+    logger.error({ err }, 'scan failed');
     res.status(500).json({ error: message });
   }
 });
