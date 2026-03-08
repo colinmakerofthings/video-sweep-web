@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import stringSimilarity from 'string-similarity';
+import logger from './logger';
 
 const OMDB_BASE = 'http://www.omdbapi.com/';
 
@@ -23,9 +24,13 @@ interface OmdbSearch {
 async function fetchJson<T>(url: string): Promise<T | null> {
   try {
     const res = await fetch(url);
-    if (!res.ok) return null;
+    if (!res.ok) {
+      logger.warn({ status: res.status }, 'omdb http error');
+      return null;
+    }
     return (await res.json()) as T;
-  } catch {
+  } catch (err: unknown) {
+    logger.warn({ err }, 'omdb fetch failed');
     return null;
   }
 }
@@ -71,6 +76,7 @@ export async function validateMovie(
   apiKey: string
 ): Promise<OmdbResult> {
   if (!apiKey) return { valid: '-', suggested: '' };
+  logger.debug({ title, year }, 'omdb lookup');
 
   // Direct title lookup
   const directUrl = year
@@ -89,13 +95,16 @@ export async function validateMovie(
       ) >= 0.8;
 
     if (match) {
+      logger.debug({ title, canonical }, 'omdb direct match');
       return { valid: 'Yes', suggested: canonical };
     } else {
+      logger.debug({ title, canonical }, 'omdb direct hit but low similarity');
       return { valid: 'No', suggested: canonical };
     }
   }
 
   // Fallback: fuzzy search
+  logger.debug({ title }, 'omdb trying fuzzy search');
   const fuzzy = await searchFuzzy(title, year, apiKey);
   if (fuzzy) {
     return { valid: 'No', suggested: fuzzy };

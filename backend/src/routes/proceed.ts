@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ScanRow } from '../lib/types';
+import logger from '../lib/logger';
 
 const router = Router();
 
@@ -95,6 +96,7 @@ router.post('/', (req: Request, res: Response) => {
 
   const total = rows.length;
   const result: ProceedResult = { moved: 0, deleted: 0, errors: [], failedFiles: [] };
+  logger.info({ total, deleteEmptyFolders }, 'proceed started');
 
   const sourceDir = process.env.SOURCE_DIR ?? '/media/source';
 
@@ -105,6 +107,7 @@ router.post('/', (req: Request, res: Response) => {
       if (deleteEmptyFolders) {
         removeAllEmptyDirs(sourceDir, sourceDir);
       }
+      logger.info({ moved: result.moved, deleted: result.deleted, errorCount: result.errors.length }, 'proceed done');
       emit({ type: 'done', ...result });
       res.end();
       return;
@@ -117,22 +120,24 @@ router.post('/', (req: Request, res: Response) => {
         moveFile(row.file, row.targetPath);
         result.moved++;
         removeEmptyDirs(path.dirname(row.file), sourceDir);
+        logger.info({ src: row.file, dest: row.targetPath }, 'file moved');
       } catch (err: unknown) {
         result.failedFiles.push(row.file);
-        result.errors.push(
-          `Move failed: ${row.file} → ${row.targetPath}: ${err instanceof Error ? err.message : String(err)}`
-        );
+        const msg = `Move failed: ${row.file} → ${row.targetPath}: ${err instanceof Error ? err.message : String(err)}`;
+        result.errors.push(msg);
+        logger.error({ file: row.file, dest: row.targetPath, err }, 'file move failed');
       }
     } else if (row.action === 'delete') {
       try {
         fs.unlinkSync(row.file);
         result.deleted++;
         removeEmptyDirs(path.dirname(row.file), sourceDir);
+        logger.info({ file: row.file }, 'file deleted');
       } catch (err: unknown) {
         result.failedFiles.push(row.file);
-        result.errors.push(
-          `Delete failed: ${row.file}: ${err instanceof Error ? err.message : String(err)}`
-        );
+        const msg = `Delete failed: ${row.file}: ${err instanceof Error ? err.message : String(err)}`;
+        result.errors.push(msg);
+        logger.error({ file: row.file, err }, 'file delete failed');
       }
     }
 
