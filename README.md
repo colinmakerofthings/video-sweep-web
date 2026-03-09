@@ -10,37 +10,38 @@ A browser-based variant of my [video-sweep](https://github.com/colinmakerofthing
 
 ## Quick start
 
-### 1. Clone the repo
+> **Try the demo first** — the `demo/` directory contains a ready-made set of placeholder video files (empty files) covering all supported naming conventions and file types. See [`demo/README.md`](demo/README.md) for instructions.
+
+Deployment is driven by `docker-compose.yml`. You need to supply four environment variables:
+
+| Variable | Required | Example |
+| --- | --- | --- |
+| `SOURCE_DIR` | Yes | `/mnt/downloads` |
+| `MOVIES_DIR` | Yes | `/mnt/movies` |
+| `SERIES_DIR` | Yes | `/mnt/tv` |
+| `OMDB_API_KEY` | No | *(leave blank to disable OMDb validation)* |
+
+### Via Docker Compose
 
 ```bash
 git clone https://github.com/colinmakerofthings/video-sweep-web.git
 cd video-sweep-web
-```
-
-> **Try the demo first** — the `demo/` directory contains a ready-made set of placeholder video files (empty files) covering all supported naming conventions and file types. See [`demo/README.md`](demo/README.md) for instructions.
-
-### 2. Configure
-
-```bash
 cp .env.example .env
 ```
 
-Edit `.env` and set the three directory paths and (optionally) your OMDb API key:
-
-```env
-SOURCE_DIR=/mnt/downloads      # where your downloaded video files live
-MOVIES_DIR=/mnt/movies         # where movies should be moved
-SERIES_DIR=/mnt/tv             # where TV series episodes should be moved
-OMDB_API_KEY=                  # optional free key from omdbapi.com
-```
-
-### 3. Build and run
+Edit `.env` with your directory paths and optional API key, then:
 
 ```bash
 docker compose up --build -d
 ```
 
-Open `http://<your-host-ip>:8080` in a browser. If you are running Docker locally, use `http://localhost:8080`.
+### Via a stack manager (Portainer, Dockge, etc.)
+
+Create a new stack from the Git repository `https://github.com/colinmakerofthings/video-sweep-web`, using `docker-compose.yml` as the compose file. Set the environment variables above in your stack manager's UI, then deploy.
+
+---
+
+Open `http://<your-host-ip>:8080` in a browser.
 
 ## Naming conventions
 
