@@ -8,6 +8,8 @@ A browser-based variant of my [video-sweep](https://github.com/colinmakerofthing
 2. **Review** - results appear in a table with original file, type, new filename, and destination path. If `OMDB_API_KEY` is set, movies also show an OMDb validation column
 3. **Proceed** - if you are happy with the plan, press Proceed; files are moved to `/media/movies` or `/media/series` and empty source folders are cleaned up
 
+![Video Sweep UI](docs/Screenshot.png)
+
 ## Quick start
 
 > **Try the demo first** — the `demo/` directory contains a ready-made set of placeholder video files (empty files) covering all supported naming conventions and file types. See [`demo/README.md`](demo/README.md) for instructions.
@@ -77,6 +79,10 @@ When `OMDB_API_KEY` is set, each movie row is validated against OMDb:
 | No match returned | Row appears unchanged |
 
 The backend first attempts a direct title lookup; if that returns no result it falls back to a fuzzy search using progressively shorter title substrings.
+
+Clicking a movie row opens a git-style diff popup, showing the original filename and the OMDb-suggested canonical title side-by-side:
+
+![OMDb diff UI](docs/omdb-diff.png)
 
 ### What happens without the key
 
