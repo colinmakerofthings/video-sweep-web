@@ -1,6 +1,6 @@
 # video-sweep-web
 
-A browser-based variant of my [video-sweep](https://github.com/colinmakerofthings/video-sweep) tool. I run it in Docker and use it to scan, classify, and rename newly downloaded video files. The UI is mobile-friendly, with a slide-in sidebar and a card-based results layout on small screens.
+A browser-based variant of my [video-sweep](https://github.com/colinmakerofthings/video-sweep) tool. I run it in Docker and use it to scan, classify, rename, and move newly downloaded video files. The UI is mobile-friendly, with a slide-in sidebar and a card-based results layout on small screens.
 
 ## How it works
 
@@ -46,20 +46,20 @@ Open `http://<your-host-ip>:8080` in a browser. If you are running Docker locall
 
 ### Movies
 
-Input: `The.Dark.Knight.2008.1080p.BluRay.mkv`
-Output: `The Dark Knight [2008].mkv` → `$MOVIES_DIR/The Dark Knight [2008].mkv`
+Input: `Gullivers.Travels.1939.1080p.BluRay.mkv`
+Output: `Gulliver's Travels [1939].mkv` → `$MOVIES_DIR/Gulliver's Travels [1939].mkv`
 
 ### TV Series
 
-Input: `Breaking.Bad.S01E01.Pilot.mkv`
-Output: `Breaking Bad S01E01.mkv` → `$SERIES_DIR/Breaking Bad/Season 1/Breaking Bad S01E01.mkv`
+Input: `The.Lone.Ranger.S01E01.mkv`
+Output: `The Lone Ranger S01E01.mkv` → `$SERIES_DIR/The Lone Ranger/Season 1/The Lone Ranger S01E01.mkv`
 
 ## Optional: OMDb validation
 
 ### Getting a free API key
 
 1. Go to <https://www.omdbapi.com/apikey.aspx>
-2. Select the **FREE** tier and enter your email address
+2. Select the **FREE** tier (1,000 requests/day) and enter your email address
 3. Submit the form — OMDb will send an activation link to your inbox
 4. Click the activation link; your key is then shown on the confirmation page
 5. Copy the key into your `.env` file:
@@ -70,12 +70,13 @@ Output: `Breaking Bad S01E01.mkv` → `$SERIES_DIR/Breaking Bad/Season 1/Breakin
 
 ### What happens with the key set
 
-When `OMDB_API_KEY` is set, movie rows show two extra columns in the scan table:
+When `OMDB_API_KEY` is set, each movie row is validated against OMDb:
 
-| Column | Meaning |
+| OMDb result | What you see |
 | --- | --- |
-| **Valid** | `Yes` — OMDb confirmed the title exactly; `No` — OMDb found a different canonical title; `-` — no match returned |
-| **Suggested Name** | The canonical OMDb title, e.g. `The Dark Knight [2008]` |
+| Title confirmed | Row appears normally |
+| Different canonical title found | Row is highlighted; the Destination cell shows the OMDb suggestion and an **Accept** button to apply it |
+| No match returned | Row appears unchanged |
 
 The backend first attempts a direct title lookup; if that returns no result it falls back to a fuzzy search using progressively shorter title substrings.
 
@@ -84,19 +85,10 @@ The backend first attempts a direct title lookup; if that returns no result it f
 If `OMDB_API_KEY` is left blank (the default):
 
 - **No requests** are made to the OMDb API
-- The **Valid** and **Suggested Name** columns display `-` for every movie row
+- OMDb name validation is skipped — no inline warnings or suggestions will appear in the results
 - All other scan and rename functionality works exactly as normal — the key is only needed for title validation
 
 You can always add the key later and re-scan; no other configuration changes are required.
-
-### Usage limits
-
-| Tier | Daily request limit | Cost |
-| --- | --- | --- |
-| **Free** | 1,000 requests/day | Free (requires email activation) |
-| **Patreon** | 100,000 requests/day | Paid |
-
-Each movie in a scan consumes at most a few requests (one direct lookup, plus up to a handful of fuzzy-search attempts if the direct lookup fails). For typical home-media libraries the free tier is more than sufficient.
 
 ## Environment variables
 
@@ -105,7 +97,7 @@ Each movie in a scan consumes at most a few requests (one direct lookup, plus up
 | `SOURCE_DIR` | Yes | Host path mounted as `/media/source` inside the container |
 | `MOVIES_DIR` | Yes | Host path mounted as `/media/movies` |
 | `SERIES_DIR` | Yes | Host path mounted as `/media/series` |
-| `OMDB_API_KEY` | No | Free OMDb API key; leave blank to disable validation (Valid / Suggested Name columns show `-`). Free tier: 1,000 req/day. Get one at <https://www.omdbapi.com/apikey.aspx> |
+| `OMDB_API_KEY` | No | Free OMDb API key; leave blank to disable title validation. Free tier: 1,000 req/day. Get one at <https://www.omdbapi.com/apikey.aspx> |
 
 ## Architecture
 
@@ -115,7 +107,7 @@ graph TB
 
     subgraph DC["Docker Compose"]
         Frontend["nginx\nAngular SPA\n:80"]
-        Backend["Node.js / Express\n:3001\nPOST /api/scan\nPOST /api/proceed\nGET  /api/health"]
+        Backend["Node.js / Express\n:3001\nPOST /api/scan\nPOST /api/proceed\nGET  /api/health\nGET  /api/status\nGET  /api/config"]
     end
 
     subgraph Volumes["Host Volumes"]
@@ -138,10 +130,10 @@ graph TB
 
 ### Backend
 
-```bash
+```powershell
 cd backend
 npm install
-# Set environment variables
+# PowerShell: set environment variables
 $env:SOURCE_DIR = "C:/path/to/source"
 $env:MOVIES_DIR = "C:/path/to/movies"
 $env:SERIES_DIR = "C:/path/to/series"
@@ -156,15 +148,17 @@ npm install
 npm start
 ```
 
-Then open `http://localhost:4200`. The Angular dev server proxies `/api/*` to `http://localhost:3001` — add a `proxy.conf.json` if needed.
+Then open `http://localhost:4200`. The Angular dev server proxies `/api/*` to `http://localhost:3001` via the included `proxy.conf.json`.
 
 ## API reference
+
+### `GET /api/health`
+
+Liveness check. Returns `{ "status": "ok" }`.
 
 ### `GET /api/status`
 
 Returns the number of video files currently present in `SOURCE_DIR`. Does not classify or call OMDb — it only counts, so it is fast and cheap to poll.
-
-### Response
 
 ```json
 { "count": 42 }
@@ -172,10 +166,34 @@ Returns the number of video files currently present in `SOURCE_DIR`. Does not cl
 
 `count` is the number of pending video files (`.mp4`, `.mkv`, `.avi`, `.m4v`). Non-video files are excluded.
 
-The endpoint is exposed directly by the backend on port `3001`, not through the nginx proxy, so call it as:
+### `GET /api/config`
 
-```http
-GET http://<host>:3001/api/status
+Returns the directory paths currently configured via environment variables. Useful for confirming that volumes are mounted correctly.
+
+```json
+{ "sourceDir": "/media/source", "moviesDir": "/media/movies", "seriesDir": "/media/series" }
+```
+
+### `POST /api/scan`
+
+Scans `SOURCE_DIR`, classifies each file, generates target filenames, and validates movie titles against OMDb (if `OMDB_API_KEY` is set). No request body required.
+
+Returns a `rows` array. Each row has: `file`, `type` (`movie` | `series` | `delete`), `action` (`move` | `delete` | `skip`), `newFilename`, `targetPath`, `valid` (`Yes` | `No` | `-`), `suggested`.
+
+### `POST /api/proceed`
+
+Executes the planned moves and deletes. Accepts the `rows` array from `/api/scan` (with any user-modified `action` values) and an optional `deleteEmptyFolders` flag (default `true`).
+
+```json
+{ "rows": [...], "deleteEmptyFolders": true }
+```
+
+Responds as a Server-Sent Events stream (`text/event-stream`). Two event types:
+
+```text
+data: {"type":"progress","current":1,"total":10}
+
+data: {"type":"done","moved":9,"deleted":1,"errors":[],"failedFiles":[]}
 ```
 
 ## Testing
@@ -203,5 +221,4 @@ Tests cover component logic including action toggling, OMDb suggestion acceptanc
 
 ## CI
 
-GitHub Actions runs both test suites on every push to `main` and on pull requests. See `.github/workflows/ci.yml`.
-
+GitHub Actions runs both test suites on every push to `master` and on pull requests. See `.github/workflows/ci.yml`.
