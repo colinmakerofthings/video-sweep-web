@@ -1,19 +1,12 @@
 # video-sweep-web
 
-A web-based variant of my [video-sweep](https://github.com/colinmakerofthings/video-sweep) tool — scan, classify, and rename video files from a browser UI. Runs as a Docker Compose app. The UI is mobile-friendly, with a slide-in sidebar and a card-based results layout on small screens.
+A browser-based variant of my [video-sweep](https://github.com/colinmakerofthings/video-sweep) tool. I run it in Docker and use it to scan, classify, and rename newly downloaded video files. The UI is mobile-friendly, with a slide-in sidebar and a card-based results layout on small screens.
 
 ## How it works
 
 1. **Scan** — press the Scan button; the backend walks the `/media/source` volume, classifies each video as a *movie* or *series episode*, and generates standardised target filenames
 2. **Review** — results appear in a table with original file, type, new filename, and destination path. If `OMDB_API_KEY` is set, movies also show an OMDb validation column
 3. **Proceed** — if you are happy with the plan, press Proceed; files are moved to `/media/movies` or `/media/series` and empty source folders are cleaned up
-
-## Prerequisites
-
-- **Docker Engine 20.10+** — [Install Docker](https://docs.docker.com/engine/install/)
-- **Docker Compose v2** — included with Docker Desktop and Docker Engine 20.10+; confirm with `docker compose version`
-
-Docker Desktop covers both requirements on macOS and Windows. On a Raspberry Pi or other Linux host, install Docker Engine and then verify the `docker compose` (v2) plugin is available.
 
 ## Quick start
 
@@ -211,3 +204,4 @@ Tests cover component logic including action toggling, OMDb suggestion acceptanc
 ## CI
 
 GitHub Actions runs both test suites on every push to `main` and on pull requests. See `.github/workflows/ci.yml`.
+
