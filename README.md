@@ -24,6 +24,8 @@ git clone https://github.com/colinmakerofthings/video-sweep-web.git
 cd video-sweep-web
 ```
 
+> **Try the demo first** — the `demo/` directory contains a ready-made set of placeholder video files (empty files) covering all supported naming conventions and file types. See [`demo/README.md`](demo/README.md) for instructions.
+
 ### 2. Configure
 
 ```bash
