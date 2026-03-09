@@ -7,7 +7,7 @@ This directory contains a set of placeholder files that demonstrate the full ran
 ### `source/` — files to be scanned
 
 | File | Type | Convention |
-|------|------|------------|
+| ------ | ------ | ------------ |
 | `Gullivers.Travels.1939.mkv` | Movie | Dot-separated |
 | `The_Little_Shop_of_Horrors_1960.avi` | Movie | Underscore-separated |
 | `Night of the Living Dead (1968).mp4` | Movie | Spaces with year in parentheses |
@@ -20,7 +20,7 @@ This directory contains a set of placeholder files that demonstrate the full ran
 | `The Lone Ranger/The.Lone.Ranger.S01E03.mp4` | TV Series | Dot-separated S##E## |
 | `The Lone Ranger/poster.jpg` | Non-video | JPEG inside a subdirectory |
 
-All five movies are in the public domain (expired copyright). The Lone Ranger episodes are from Season 1.
+The Lone Ranger episodes are from Season 1.
 
 ### `movies/` and `series/` — output directories
 
@@ -28,14 +28,18 @@ Empty directories (kept with `.gitkeep`) where the app will move files after you
 
 ## Using the demo
 
-### With Docker Compose
+The demo is designed to be run locally with Docker Compose.
+
+### Steps
 
 1. Copy `.env.example` to `.env`:
+
    ```bash
    cp .env.example .env
    ```
 
-2. Edit `.env` and point the three directory variables at the demo subdirectories. Paths must be absolute — run `pwd` from the repo root to get the prefix:
+2. Edit `.env` and point the three directory variables at the demo subdirectories. Paths must be absolute and use forward slashes — on Windows, convert backslashes manually (e.g. `C:/Users/you/video-sweep-web`):
+
    ```env
    SOURCE_DIR=<absolute-repo-path>/demo/source
    MOVIES_DIR=<absolute-repo-path>/demo/movies
@@ -44,17 +48,18 @@ Empty directories (kept with `.gitkeep`) where the app will move files after you
    ```
 
 3. Start the stack:
+
    ```bash
    docker compose up --build -d
    ```
 
-4. Open `http://localhost:8080` and click **Scan**.
+4. Open `http://localhost:8080`, click **Scan**, review the results, then click **Proceed** to move the files.
 
 ### What to expect
 
 - **5 movies** are detected and renamed using standardised `Title [YYYY].ext` filenames.
 - **3 TV series episodes** are detected and placed under `The Lone Ranger/Season 1/`.
-- **3 JPEG files** appear in the non-video section, ready to be deleted.
+- **3 JPEG files** appear in the non-video section; select the delete action for each and they will be removed when you press **Proceed**.
 - Files inside subdirectories (`White Zombie (1932)/` and `The Lone Ranger/`) demonstrate recursive scanning.
 
 ### Resetting after a demo run

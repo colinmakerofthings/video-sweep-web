@@ -1,12 +1,12 @@
 # video-sweep-web
 
-A browser-based variant of my [video-sweep](https://github.com/colinmakerofthings/video-sweep) tool. I run it in Docker and use it to scan, classify, rename, and move newly downloaded video files. The UI is mobile-friendly, with a slide-in sidebar and a card-based results layout on small screens.
+A browser-based variant of my [video-sweep](https://github.com/colinmakerofthings/video-sweep) tool. I run it in Docker and use it to scan, classify, rename, and move newly downloaded video files. The UI is mobile-friendly, with a slide-in sidebar and a card-based results layout on smaller screens.
 
 ## How it works
 
-1. **Scan** — press the Scan button; the backend walks the `/media/source` volume, classifies each video as a *movie* or *series episode*, and generates standardised target filenames
-2. **Review** — results appear in a table with original file, type, new filename, and destination path. If `OMDB_API_KEY` is set, movies also show an OMDb validation column
-3. **Proceed** — if you are happy with the plan, press Proceed; files are moved to `/media/movies` or `/media/series` and empty source folders are cleaned up
+1. **Scan** - press the Scan button; the backend walks the `/media/source` volume, classifies each video as a *movie* or *series episode*, and generates standardised target filenames
+2. **Review** - results appear in a table with original file, type, new filename, and destination path. If `OMDB_API_KEY` is set, movies also show an OMDb validation column
+3. **Proceed** - if you are happy with the plan, press Proceed; files are moved to `/media/movies` or `/media/series` and empty source folders are cleaned up
 
 ## Quick start
 
@@ -59,11 +59,8 @@ Output: `The Lone Ranger S01E01.mkv` → `$SERIES_DIR/The Lone Ranger/Season 1/T
 
 ### Getting a free API key
 
-1. Go to <https://www.omdbapi.com/apikey.aspx>
-2. Select the **FREE** tier (1,000 requests/day) and enter your email address
-3. Submit the form — OMDb will send an activation link to your inbox
-4. Click the activation link; your key is then shown on the confirmation page
-5. Copy the key into your `.env` file:
+1. Go to <https://www.omdbapi.com/apikey.aspx> and select the **FREE** tier (1,000 requests/day) - OMDb will email you an activation link and your key.
+2. Add the key to your environment:
 
    ```env
    OMDB_API_KEY=your_key_here
@@ -86,10 +83,7 @@ The backend first attempts a direct title lookup; if that returns no result it f
 If `OMDB_API_KEY` is left blank (the default):
 
 - **No requests** are made to the OMDb API
-- OMDb name validation is skipped — no inline warnings or suggestions will appear in the results
-- All other scan and rename functionality works exactly as normal — the key is only needed for title validation
-
-You can always add the key later and re-scan; no other configuration changes are required.
+- OMDb name validation is skipped - no inline warnings or suggestions will appear in the results
 
 ## Environment variables
 
