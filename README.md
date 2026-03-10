@@ -162,7 +162,7 @@ Liveness check. Returns `{ "status": "ok" }`.
 Returns the number of video files currently present in `SOURCE_DIR`. Does not classify or call OMDb — it only counts, so it is fast and cheap to poll.
 
 ```json
-{ "count": 42 }
+{ "count": 42, "health": "ok" }
 ```
 
 `count` is the number of pending video files (`.mp4`, `.mkv`, `.avi`, `.m4v`). Non-video files are excluded.
