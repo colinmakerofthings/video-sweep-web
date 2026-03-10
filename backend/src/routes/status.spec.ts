@@ -30,7 +30,7 @@ describe('GET /api/status', () => {
     const res = await request(makeApp()).get('/api/status');
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ count: 3 });
+    expect(res.body).toEqual({ count: 3, health: 'ok' });
   });
 
   it('returns count 0 when source directory is empty', async () => {
@@ -39,7 +39,7 @@ describe('GET /api/status', () => {
     const res = await request(makeApp()).get('/api/status');
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ count: 0 });
+    expect(res.body).toEqual({ count: 0, health: 'ok' });
   });
 
   it('excludes non-video files from the count', async () => {
@@ -50,6 +50,6 @@ describe('GET /api/status', () => {
 
     const res = await request(makeApp()).get('/api/status');
 
-    expect(res.body).toEqual({ count: 1 });
+    expect(res.body).toEqual({ count: 1, health: 'ok' });
   });
 });
