@@ -5,7 +5,7 @@ Web-based variant of video-sweep. Scans a source directory for video files, clas
 
 ## Architecture
 - **Backend**: Node.js + Express + TypeScript (`backend/`). Exposes `/api/scan` and `/api/proceed`. Source/movies/series directories are mounted as Docker volumes at `/media/source`, `/media/movies`, `/media/series`.
-- **Frontend**: Angular 17+ standalone app (`frontend/`). Served by nginx which proxies `/api/*` to the backend container.
+- **Frontend**: Angular 21 standalone app (`frontend/`). Served by nginx which proxies `/api/*` to the backend container.
 - **Deployment**: Docker Compose (`docker-compose.yml`). Environment variables (`SOURCE_DIR`, `MOVIES_DIR`, `SERIES_DIR`, `OMDB_API_KEY`) are set in `.env`.
 
 ## Key conventions
