@@ -4,11 +4,11 @@ This document describes the end-to-end process for creating a new release.
 
 ## Step 1 — Decide the version number
 
-| Change type                        | Version bump                        |
-|------------------------------------|-------------------------------------|
-| Bug fixes only                     | Patch — `v1.0.0` → `v1.0.1`         |
-| New features, backwards-compatible | Minor — `v1.0.0` → `v1.1.0`         |
-| Breaking changes                   | Major — `v1.0.0` → `v2.0.0`         |
+| Change type | Version bump |
+| --- | --- |
+| Bug fixes only | Patch — increment `PATCH` |
+| New features, backwards-compatible | Minor — increment `MINOR`, reset `PATCH` |
+| Breaking changes | Major — increment `MAJOR`, reset `MINOR` and `PATCH` |
 
 ## Step 2 — Update package versions
 
@@ -19,24 +19,24 @@ backend/package.json
 frontend/package.json
 ```
 
-Example for `v1.1.0`:
+Set the package version to the release number without the `v` prefix. Replace the placeholders with the actual version numbers:
 
 ```json
-"version": "1.1.0"
+"version": "<major>.<minor>.<patch>"
 ```
 
 Commit and push to `master`:
 
 ```bash
 git add backend/package.json frontend/package.json
-git commit -m "chore: bump version to 1.1.0"
+git commit -m "chore: bump version to <major>.<minor>.<patch>"
 git push origin master
 ```
 
 ## Step 3 — Draft the GitHub Release
 
 1. Go to the repository on GitHub → **Releases** → **Draft a new release**
-2. Click **Choose a tag**, type the new tag (e.g. `v1.1.0`), and select **Create new tag on publish**; set the target branch to **master**
+2. Click **Choose a tag**, type `v<major>.<minor>.<patch>` with the actual version numbers, and select **Create new tag on publish**; set the target branch to **master**
 3. Set the release title to the tag name, click **Generate release notes**, review, and click **Publish release**
 
 ## Step 4 — Wait for the release workflow
@@ -45,13 +45,13 @@ Publishing the release triggers the [Release workflow](.github/workflows/release
 
 1. Builds the backend Docker image
 2. Builds the frontend Docker image
-3. Pushes both to ghcr.io with tags: `v1.1.0`, `1.1`, `1`, and `latest`
+3. Pushes both to ghcr.io with tags: `v<major>.<minor>.<patch>`, `<major>.<minor>`, `<major>`, and `latest`
 
 Monitor progress under **Actions → Release** on GitHub. Once complete, the images are visible under **Packages** on the repository page:
 
 ```text
-ghcr.io/colinmakerofthings/video-sweep-web-backend:v1.1.0
-ghcr.io/colinmakerofthings/video-sweep-web-frontend:v1.1.0
+ghcr.io/colinmakerofthings/video-sweep-web-backend:v<major>.<minor>.<patch>
+ghcr.io/colinmakerofthings/video-sweep-web-frontend:v<major>.<minor>.<patch>
 ```
 
 ## Step 5 — Redeploy
@@ -75,11 +75,11 @@ curl -X POST "<your-webhook-url>"
 
 ## Image tags reference
 
-| Tag       | Meaning                                   |
-|-----------|-------------------------------------------|
-| `latest`  | Always points to the most recent release  |
-| `1`       | Latest release with major version 1       |
-| `1.1`     | Latest patch of minor version 1.1         |
-| `v1.1.0`  | Exact release — pinned, immutable         |
+| Tag | Meaning |
+| --- | --- |
+| `latest` | Always points to the most recent release |
+| `<major>` | Latest release with that major version |
+| `<major>.<minor>` | Latest patch of that minor version |
+| `v<major>.<minor>.<patch>` | Exact release — pinned, immutable |
 
-Use `latest` for automatic updates on redeploy. Pin to `v1.1.0` if you want explicit control.
+Use `latest` for automatic updates on redeploy. Pin to an exact `v<major>.<minor>.<patch>` tag if you want explicit control.
